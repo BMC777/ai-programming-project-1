@@ -9,21 +9,24 @@ import com.badlogic.gdx.math.MathUtils;
 public class PlayerEntity
 {
     private Vector2 currentVelocity;
-    private Vector2 currentPlayerHeading; //Direction player is facing (Should always be Normalized)
+    private Vector2 currentPlayerHeading;   //Direction player is facing (Should always be Normalized)
+    private Vector2 nextPlayerHeading;
 
     private int playerWidth;
     private int playerHeight;
+    private float xPlayerOrigin;
+    private float yPlayerOrigin;
 
     private float xCurrentWorldPosition;
     private float yCurrentWorldPosition;
     private float xNextWorldPosition;
     private float yNextWorldPosition;
 
-    private float currentRotationAngle; //Angle in which player is facing with reference to 0 (degrees)
+    private float rotationAngle; //Angle between current and next Heading
 
     private static final float BASE_VELOCITY = 100;
-    private static final float REFERENCE_ANGLE = 0; //0 degrees on Unit Circle
-
+    private static final Vector2 REFERENCE_VECTOR = new Vector2(0, 0);  //Normalized Vector pointing directly
+                                                                        // 'North' (90 degrees on Unit Circle)
 
     PlayerEntity(float xCurrentWorldPosition, float yCurrentWorldPosition, int playerWidth, int playerHeight)
     {
@@ -31,21 +34,24 @@ public class PlayerEntity
         this.playerWidth = playerWidth;
         this.playerHeight = playerHeight;
 
+        this.xPlayerOrigin = playerWidth / 2;
+        this.yPlayerOrigin = playerHeight / 2;
+
         //Spawn position
         this.xCurrentWorldPosition = xCurrentWorldPosition;
         this.yCurrentWorldPosition = yCurrentWorldPosition;
 
-        currentRotationAngle = 90; //Player always spawns facing 'North'
-
+        currentPlayerHeading = new Vector2(REFERENCE_VECTOR);   //Player always spawns facing 'East'
+        nextPlayerHeading = new Vector2(currentPlayerHeading);
         currentVelocity = new Vector2(); //Velocity is initially 0
     }
 
     public void update(float timeSinceLastUpdate)
     {
-        //currentPosition.add((currentVelocity.cpy().scl(delta)));
-        System.out.println(currentVelocity.x);
-        System.out.println(currentVelocity.y);
-        System.out.println();
+        rotationAngle = currentPlayerHeading.angle();
+
+        //xCurrentWorldPosition += currentVelocity.x * timeSinceLastUpdate;
+        //yCurrentWorldPosition += currentVelocity.y * timeSinceLastUpdate;
     }
 
     public void moveLeft()
@@ -70,7 +76,13 @@ public class PlayerEntity
 
     public void rotateToFaceMouse(float xCurrentMousePosition, float yCurrentMousePosition)
     {
+        //Determine the new heading vector
+        nextPlayerHeading.x = xCurrentMousePosition - xCurrentWorldPosition;
+        nextPlayerHeading.y = yCurrentMousePosition - yCurrentWorldPosition;
 
+        //Normalize the vector;
+        nextPlayerHeading = nextPlayerHeading.nor();
+        currentPlayerHeading = nextPlayerHeading;   //Update to new calculated heading
     }
 
    public float getCurrentXPosition()
@@ -83,6 +95,11 @@ public class PlayerEntity
         return yCurrentWorldPosition;
     }
 
+    public float getRotationAngle()
+    {
+        return rotationAngle;
+    }
+
     public int getWidth()
     {
         return playerWidth;
@@ -91,5 +108,15 @@ public class PlayerEntity
     public int getHeight()
     {
         return playerHeight;
+    }
+
+    public float getXPlayerOrigin()
+    {
+        return xPlayerOrigin;
+    }
+
+    public float getYPlayerOrigin()
+    {
+        return yPlayerOrigin;
     }
 }

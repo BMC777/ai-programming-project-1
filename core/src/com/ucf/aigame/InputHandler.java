@@ -94,7 +94,7 @@ public class InputHandler implements InputProcessor
     @Override
     public boolean mouseMoved(int screenX, int screenY)
     {
-        playerEntity.rotateToFaceMouse(screenX, screenY);
+        playerEntity.rotateToFaceMouse(screenX, 640 - screenY);
         return true;
     }
 

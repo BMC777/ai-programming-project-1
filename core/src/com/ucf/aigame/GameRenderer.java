@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
@@ -15,9 +16,11 @@ public class GameRenderer
     private GameWorld gameWorld;
     private OrthographicCamera camera;
     private SpriteBatch batcher;
-    private ShapeRenderer shapeRenderer;
 
+    private TextureRegion playerEntityTextureRegion;
     private Texture floorTile;
+
+    private PlayerEntity playerEntity;
 
     private float gameWidth;
     private float gameHeight;
@@ -36,13 +39,13 @@ public class GameRenderer
         //Telling SpriteBatch and shapeRenderer to use camera's coordinates when drawing Sprites
         batcher = new SpriteBatch();
         batcher.setProjectionMatrix(camera.combined);
-        shapeRenderer = new ShapeRenderer();
-        shapeRenderer.setProjectionMatrix(camera.combined);
+
+        initializeGameAssets();
+        initializeAssets();
     }
 
     public void render(float runTime)
     {
-        PlayerEntity playerEntity = gameWorld.getPlayerEntity();
 
         //OpenGL graphics stuff
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -58,20 +61,33 @@ public class GameRenderer
             {
                 if (x == 0 || x == gameWidth - 32 || y == 0 || y == gameHeight - 32)
                 {
-                    batcher.draw(AssetLoader.wallTile, x, y);
+                    batcher.draw(AssetLoader.wallTileTexture, x, y);
                 }
                 else
                 {
-                    batcher.draw(AssetLoader.floorTile, x, y);
+                    batcher.draw(AssetLoader.floorTileTexture, x, y);
                 }
             }
         }
 
         batcher.enableBlending();
 
-        //Drawing an Enemy
-        batcher.draw(AssetLoader.playerEntity, playerEntity.getCurrentXPosition(), playerEntity.getCurrentYPosition());
+        //Drawing the playerEntityTexture
+        batcher.draw(playerEntityTextureRegion, playerEntity.getCurrentXPosition(), playerEntity.getCurrentYPosition(),
+                playerEntity.getXPlayerOrigin(), playerEntity.getYPlayerOrigin(), playerEntity.getWidth(), playerEntity.getHeight(),
+                1, 1, playerEntity.getRotationAngle());
 
         batcher.end();
+    }
+
+    private void initializeGameAssets()
+    {
+        playerEntity = gameWorld.getPlayerEntity();
+
+    }
+
+    private void initializeAssets()
+    {
+        playerEntityTextureRegion = AssetLoader.playerEntityTextureRegion;
     }
 }

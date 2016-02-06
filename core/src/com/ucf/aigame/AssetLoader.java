@@ -2,29 +2,32 @@ package com.ucf.aigame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Created by Bryan on 1/31/2016.
  */
 public class AssetLoader
 {
-    public static Texture floorTile;
-    public static Texture wallTile;
-    public static Texture gameEntity;
-    public static Texture playerEntity;
+    public static Texture floorTileTexture;
+    public static Texture wallTileTexture;
+    public static Texture gameEntityTexture;
+    public static Texture playerEntityTexture;
+    public static TextureRegion playerEntityTextureRegion;
 
     public static void load()
     {
-        //Retrieving Floor Tile from assets folder
-        floorTile = new Texture(Gdx.files.internal("Floor Tile.png"));
-        wallTile =  new Texture(Gdx.files.internal("Wall Tile.png"));
-        gameEntity = new Texture(Gdx.files.internal("Game Entity.png"));
-        playerEntity = new Texture(Gdx.files.internal("Player.png"));
+        //Retrieving Textures from assets folder
+        floorTileTexture = new Texture(Gdx.files.internal("Floor Tile.png"));
+        wallTileTexture =  new Texture(Gdx.files.internal("Wall Tile.png"));
+        gameEntityTexture = new Texture(Gdx.files.internal("Game Entity.png"));
+        playerEntityTexture = new Texture(Gdx.files.internal("Player.png"));
+        playerEntityTextureRegion = new TextureRegion(playerEntityTexture);
     }
 
     public static void dispose()
     {
-        floorTile.dispose();
-        wallTile.dispose();
+        floorTileTexture.dispose();
+        wallTileTexture.dispose();
     }
 }
