@@ -7,20 +7,23 @@ import com.badlogic.gdx.math.MathUtils;
  * Created by Bryan on 2/3/2016.
  */
 public class PlayerEntity
-{
-    private Vector2 currentVelocity;
+{;
+    private Vector2 currentPlayerVelocity;
+    private Vector2 nextPlayerVelocity;
     private Vector2 currentPlayerHeading;   //Direction player is facing (Should always be Normalized)
     private Vector2 nextPlayerHeading;
 
     private int playerWidth;
     private int playerHeight;
+    private int inputX;
+    private int inputY;
+
     private float xPlayerOrigin;
     private float yPlayerOrigin;
 
+
     private float xCurrentWorldPosition;
     private float yCurrentWorldPosition;
-    private float xNextWorldPosition;
-    private float yNextWorldPosition;
 
     private float rotationAngle; //Angle between current and next Heading
 
@@ -43,46 +46,58 @@ public class PlayerEntity
 
         currentPlayerHeading = new Vector2(REFERENCE_VECTOR);   //Player always spawns facing 'East'
         nextPlayerHeading = new Vector2(currentPlayerHeading);
-        currentVelocity = new Vector2(); //Velocity is initially 0
+        currentPlayerVelocity = new Vector2(); //Velocity is initially 0
+        nextPlayerVelocity = new Vector2(currentPlayerVelocity);
     }
 
     public void update(float timeSinceLastUpdate)
     {
-        rotationAngle = currentPlayerHeading.angle();
+        currentPlayerHeading.set(nextPlayerHeading);    //Update to new calculated heading
+        rotationAngle = currentPlayerHeading.angle();   //Angle new heading was rotated by.
 
-        //xCurrentWorldPosition += currentVelocity.x * timeSinceLastUpdate;
-        //yCurrentWorldPosition += currentVelocity.y * timeSinceLastUpdate;
+        nextPlayerVelocity.set(inputX, inputY);
+
+        if (inputX != 0 && inputY != 0)
+        {
+            nextPlayerVelocity.scl(0.5f);
+        }
+
+        nextPlayerVelocity.scl(BASE_VELOCITY);
+        nextPlayerVelocity.rotate(rotationAngle - 90);
+        currentPlayerVelocity.set(nextPlayerVelocity);
+
+        xCurrentWorldPosition += currentPlayerVelocity.x * timeSinceLastUpdate;
+        yCurrentWorldPosition += currentPlayerVelocity.y * timeSinceLastUpdate;
     }
 
     public void moveLeft()
     {
-        currentVelocity.x += BASE_VELOCITY * MathUtils.cosDeg(180);
+        inputX -= 1;
     }
 
     public void moveRight()
     {
-        currentVelocity.x += BASE_VELOCITY * MathUtils.cosDeg(0);
+        inputX += 1;
     }
 
     public void moveUp()
     {
-        currentVelocity.y += BASE_VELOCITY * MathUtils.sinDeg(90);
+        inputY += 1;
     }
 
     public void moveDown()
     {
-        currentVelocity.y += BASE_VELOCITY * MathUtils.sinDeg(270);
+        inputY -= 1;
     }
 
     public void rotateToFaceMouse(float xCurrentMousePosition, float yCurrentMousePosition)
     {
-        //Determine the new heading vector
-        nextPlayerHeading.x = xCurrentMousePosition - xCurrentWorldPosition;
-        nextPlayerHeading.y = yCurrentMousePosition - yCurrentWorldPosition;
+        //Determine the new heading vector offset by playerOrigin to align heading with center of sprite
+        nextPlayerHeading.x = xCurrentMousePosition - (xCurrentWorldPosition + xPlayerOrigin);
+        nextPlayerHeading.y = yCurrentMousePosition - (yCurrentWorldPosition + yPlayerOrigin);
 
-        //Normalize the vector;
-        nextPlayerHeading = nextPlayerHeading.nor();
-        currentPlayerHeading = nextPlayerHeading;   //Update to new calculated heading
+        //Normalize the heading vector
+        nextPlayerHeading.nor();
     }
 
    public float getCurrentXPosition()
