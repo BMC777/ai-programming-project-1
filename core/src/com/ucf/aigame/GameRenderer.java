@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
  * Created by Bryan on 1/21/2016.
@@ -18,9 +17,12 @@ public class GameRenderer
     private SpriteBatch batcher;
 
     private TextureRegion playerEntityTextureRegion;
+    private TextureRegion gameEntityTextureRegion;
     private Texture floorTile;
 
     private PlayerEntity playerEntity;
+    private GameEntity gameEntity1;
+    private GameEntity gameEntity2;
 
     private float gameWidth;
     private float gameHeight;
@@ -77,17 +79,27 @@ public class GameRenderer
                 playerEntity.getXPlayerOrigin(), playerEntity.getYPlayerOrigin(), playerEntity.getWidth(), playerEntity.getHeight(),
                 1, 1, playerEntity.getRotationAngle());
 
+        batcher.draw(gameEntityTextureRegion, gameEntity1.getCurrentXPosition(), gameEntity1.getCurrentYPosition(),
+                gameEntity1.getXEntityOrigin(), gameEntity1.getYEntityOrigin(), gameEntity1.getWidth(), gameEntity1.getHeight(),
+                1, 1, gameEntity1.getRotationAngle());
+
+        batcher.draw(gameEntityTextureRegion, gameEntity2.getCurrentXPosition(), gameEntity2.getCurrentYPosition(),
+                gameEntity2.getXEntityOrigin(), gameEntity2.getYEntityOrigin(), gameEntity2.getWidth(), gameEntity2.getHeight(),
+                1, 1, gameEntity2.getRotationAngle());
+
         batcher.end();
     }
 
     private void initializeGameAssets()
     {
         playerEntity = gameWorld.getPlayerEntity();
-
+        gameEntity1 = gameWorld.getGameEntity1();
+        gameEntity2 = gameWorld.getGameEntity2();
     }
 
     private void initializeAssets()
     {
         playerEntityTextureRegion = AssetLoader.playerEntityTextureRegion;
+        gameEntityTextureRegion = AssetLoader.gameEntityTextureRegion;
     }
 }

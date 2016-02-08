@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
  * Created by Bryan on 2/3/2016.
  */
 public class PlayerEntity
-{;
+{
     private Vector2 currentPlayerVelocity;
     private Vector2 nextPlayerVelocity;
     private Vector2 currentPlayerHeading;   //Direction player is facing (Should always be Normalized)
@@ -27,9 +27,8 @@ public class PlayerEntity
 
     private float rotationAngle; //Angle between current and next Heading
 
-    private static final float BASE_VELOCITY = 100;
-    private static final Vector2 REFERENCE_VECTOR = new Vector2(0, 0);  //Normalized Vector pointing directly
-                                                                        // 'North' (90 degrees on Unit Circle)
+    private static final float BASE_VELOCITY = 125;
+    private static final Vector2 REFERENCE_VECTOR = new Vector2(0, 0);  //Normalized Vector pointing to 0 degrees
 
     PlayerEntity(float xCurrentWorldPosition, float yCurrentWorldPosition, int playerWidth, int playerHeight)
     {
@@ -37,16 +36,17 @@ public class PlayerEntity
         this.playerWidth = playerWidth;
         this.playerHeight = playerHeight;
 
+        //Center of the Sprite
         this.xPlayerOrigin = playerWidth / 2;
         this.yPlayerOrigin = playerHeight / 2;
 
-        //Spawn position
+        //Spawn Position
         this.xCurrentWorldPosition = xCurrentWorldPosition;
         this.yCurrentWorldPosition = yCurrentWorldPosition;
 
-        currentPlayerHeading = new Vector2(REFERENCE_VECTOR);   //Player always spawns facing 'East'
+        currentPlayerHeading = new Vector2(REFERENCE_VECTOR);       //Player always spawns facing 'East'
         nextPlayerHeading = new Vector2(currentPlayerHeading);
-        currentPlayerVelocity = new Vector2(); //Velocity is initially 0
+        currentPlayerVelocity = new Vector2();                      //Velocity is initially 0
         nextPlayerVelocity = new Vector2(currentPlayerVelocity);
     }
 
@@ -55,21 +55,23 @@ public class PlayerEntity
         currentPlayerHeading.set(nextPlayerHeading);    //Update to new calculated heading
         rotationAngle = currentPlayerHeading.angle();   //Angle new heading was rotated by.
 
-        nextPlayerVelocity.set(inputX, inputY);
+        nextPlayerVelocity.set(inputX, inputY);         //Velocity initialized to basic input velocities
 
         if (inputX != 0 && inputY != 0)
         {
-            nextPlayerVelocity.scl(0.5f);
+            nextPlayerVelocity.scl(0.5f);               //Diagonal movement should not be faster
         }
 
-        nextPlayerVelocity.scl(BASE_VELOCITY);
-        nextPlayerVelocity.rotate(rotationAngle - 90);
-        currentPlayerVelocity.set(nextPlayerVelocity);
+        nextPlayerVelocity.scl(BASE_VELOCITY);          //Applying the velocity magnitude
+        nextPlayerVelocity.rotate(rotationAngle - 90);  //Rotating the vector to match the heading
+        currentPlayerVelocity.set(nextPlayerVelocity);  //Update the current velocity
 
+        //Update World position, scaling velocity over timeSinceLastUpdate
         xCurrentWorldPosition += currentPlayerVelocity.x * timeSinceLastUpdate;
         yCurrentWorldPosition += currentPlayerVelocity.y * timeSinceLastUpdate;
     }
 
+    //Updated by InputHandler
     public void moveLeft()
     {
         inputX -= 1;

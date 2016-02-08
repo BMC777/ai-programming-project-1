@@ -13,7 +13,9 @@ public class AssetLoader
     public static Texture wallTileTexture;
     public static Texture gameEntityTexture;
     public static Texture playerEntityTexture;
+
     public static TextureRegion playerEntityTextureRegion;
+    public static TextureRegion gameEntityTextureRegion;
 
     public static void load()
     {
@@ -22,7 +24,9 @@ public class AssetLoader
         wallTileTexture =  new Texture(Gdx.files.internal("Wall Tile.png"));
         gameEntityTexture = new Texture(Gdx.files.internal("Game Entity.png"));
         playerEntityTexture = new Texture(Gdx.files.internal("Player.png"));
+
         playerEntityTextureRegion = new TextureRegion(playerEntityTexture);
+        gameEntityTextureRegion = new TextureRegion(gameEntityTexture);
     }
 
     public static void dispose()
