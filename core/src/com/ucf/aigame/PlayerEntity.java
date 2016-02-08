@@ -1,5 +1,6 @@
 package com.ucf.aigame;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -8,29 +9,30 @@ import com.badlogic.gdx.math.MathUtils;
  */
 public class PlayerEntity
 {
+    private Rectangle collisionBox;
+    private WallSensor wallSensor;
+
     private Vector2 currentPlayerVelocity;
     private Vector2 nextPlayerVelocity;
     private Vector2 currentPlayerHeading;   //Direction player is facing (Should always be Normalized)
     private Vector2 nextPlayerHeading;
 
-    private int playerWidth;
-    private int playerHeight;
     private int inputX;
     private int inputY;
 
+    private float playerWidth;
+    private float playerHeight;
     private float xPlayerOrigin;
     private float yPlayerOrigin;
-
-
     private float xCurrentWorldPosition;
     private float yCurrentWorldPosition;
 
     private float rotationAngle; //Angle between current and next Heading
 
     private static final float BASE_VELOCITY = 125;
-    private static final Vector2 REFERENCE_VECTOR = new Vector2(0, 0);  //Normalized Vector pointing to 0 degrees
+    private static final Vector2 REFERENCE_VECTOR = new Vector2(1, 0);  //Normalized Vector pointing to 0 degrees
 
-    PlayerEntity(float xCurrentWorldPosition, float yCurrentWorldPosition, int playerWidth, int playerHeight)
+    PlayerEntity(float xCurrentWorldPosition, float yCurrentWorldPosition, float playerWidth, float playerHeight)
     {
         //Player Sprite dimensions
         this.playerWidth = playerWidth;
@@ -48,12 +50,15 @@ public class PlayerEntity
         nextPlayerHeading = new Vector2(currentPlayerHeading);
         currentPlayerVelocity = new Vector2();                      //Velocity is initially 0
         nextPlayerVelocity = new Vector2(currentPlayerVelocity);
+
+        wallSensor = new WallSensor(playerWidth * 5 + 16);
+        collisionBox = new Rectangle(xCurrentWorldPosition, yCurrentWorldPosition, playerWidth, playerHeight);
     }
 
     public void update(float timeSinceLastUpdate)
     {
         currentPlayerHeading.set(nextPlayerHeading);    //Update to new calculated heading
-        rotationAngle = currentPlayerHeading.angle();   //Angle new heading was rotated by.
+        rotationAngle = currentPlayerHeading.angle();   //Angle of the new heading with respect to X axis.
 
         nextPlayerVelocity.set(inputX, inputY);         //Velocity initialized to basic input velocities
 
@@ -63,12 +68,15 @@ public class PlayerEntity
         }
 
         nextPlayerVelocity.scl(BASE_VELOCITY);          //Applying the velocity magnitude
-        nextPlayerVelocity.rotate(rotationAngle - 90);  //Rotating the vector to match the heading
+        nextPlayerVelocity.rotate(rotationAngle - 90);  //Rotating the vector to match the Sprite
         currentPlayerVelocity.set(nextPlayerVelocity);  //Update the current velocity
 
         //Update World position, scaling velocity over timeSinceLastUpdate
         xCurrentWorldPosition += currentPlayerVelocity.x * timeSinceLastUpdate;
         yCurrentWorldPosition += currentPlayerVelocity.y * timeSinceLastUpdate;
+
+        collisionBox.setPosition(xCurrentWorldPosition, yCurrentWorldPosition);
+        wallSensor.update(currentPlayerHeading);
     }
 
     //Updated by InputHandler
@@ -117,12 +125,12 @@ public class PlayerEntity
         return rotationAngle;
     }
 
-    public int getWidth()
+    public float getWidth()
     {
         return playerWidth;
     }
 
-    public int getHeight()
+    public float getHeight()
     {
         return playerHeight;
     }
@@ -135,5 +143,35 @@ public class PlayerEntity
     public float getYPlayerOrigin()
     {
         return yPlayerOrigin;
+    }
+
+    public float getWallSensorEndpointX(int i)
+    {
+        return wallSensor.getSensorArray(i).x + xCurrentWorldPosition + xPlayerOrigin;
+    }
+
+    public float getWallSensorEndpointY(int i)
+    {
+        return wallSensor.getSensorArray(i).y + yCurrentWorldPosition + yPlayerOrigin;
+    }
+
+    public float getWallSensorOriginX()
+    {
+        return xCurrentWorldPosition + xPlayerOrigin;
+    }
+
+    public float getWallSensorOriginY()
+    {
+        return yCurrentWorldPosition + yPlayerOrigin;
+    }
+
+    public Rectangle getCollisionBox()
+    {
+        return collisionBox;
+    }
+
+    public void collisionStop()
+    {
+        currentPlayerVelocity.setZero();
     }
 }

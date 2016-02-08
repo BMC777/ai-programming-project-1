@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
  * Created by Bryan on 1/21/2016.
@@ -15,10 +16,12 @@ public class GameRenderer
     private GameWorld gameWorld;
     private OrthographicCamera camera;
     private SpriteBatch batcher;
+    private ShapeRenderer shapeRenderer;
 
     private TextureRegion playerEntityTextureRegion;
     private TextureRegion gameEntityTextureRegion;
-    private Texture floorTile;
+    private Texture floorTileTexture;
+    private Texture wallTileTexture;
 
     private PlayerEntity playerEntity;
     private GameEntity gameEntity1;
@@ -26,6 +29,8 @@ public class GameRenderer
 
     private float gameWidth;
     private float gameHeight;
+
+    private static final float TILE_DIMENSIONS = 32;
 
     public GameRenderer(GameWorld gameWorld, float gameWidth, float gameHeight)
     {
@@ -42,6 +47,9 @@ public class GameRenderer
         batcher = new SpriteBatch();
         batcher.setProjectionMatrix(camera.combined);
 
+        shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setProjectionMatrix(camera.combined);
+
         initializeGameAssets();
         initializeAssets();
     }
@@ -57,17 +65,17 @@ public class GameRenderer
         batcher.disableBlending();
 
         //Fills the screen with floor and wall tiles.
-        for (int x = 0; x < gameWidth; x += 32)
+        for (int x = 0; x < gameWidth; x += TILE_DIMENSIONS)
         {
-            for (int y = 0; y < gameHeight; y += 32)
+            for (int y = 0; y < gameHeight; y += TILE_DIMENSIONS)
             {
-                if (x == 0 || x == gameWidth - 32 || y == 0 || y == gameHeight - 32)
+                if (x == 0 || x == gameWidth - TILE_DIMENSIONS || y == 0 || y == gameHeight - TILE_DIMENSIONS)
                 {
-                    batcher.draw(AssetLoader.wallTileTexture, x, y);
+                    batcher.draw(wallTileTexture, x, y);
                 }
                 else
                 {
-                    batcher.draw(AssetLoader.floorTileTexture, x, y);
+                    batcher.draw(floorTileTexture, x, y);
                 }
             }
         }
@@ -88,6 +96,29 @@ public class GameRenderer
                 1, 1, gameEntity2.getRotationAngle());
 
         batcher.end();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        for (int i = 0; i < 5; i++)
+        {
+
+            shapeRenderer.rectLine(playerEntity.getWallSensorOriginX(), playerEntity.getWallSensorOriginY(),
+                    playerEntity.getWallSensorEndpointX(i), playerEntity.getWallSensorEndpointY(i), 1);
+
+            shapeRenderer.circle(playerEntity.getWallSensorEndpointX(i), playerEntity.getWallSensorEndpointY(i), 4);
+
+            shapeRenderer.rectLine(gameEntity1.getWallSensorOriginX(), gameEntity1.getWallSensorOriginY(),
+                    gameEntity1.getWallSensorEndpointX(i), gameEntity1.getWallSensorEndpointY(i), 1);
+
+            shapeRenderer.circle(gameEntity1.getWallSensorEndpointX(i), gameEntity1.getWallSensorEndpointY(i), 4);
+
+            shapeRenderer.rectLine(gameEntity2.getWallSensorOriginX(), gameEntity2.getWallSensorOriginY(),
+                    gameEntity2.getWallSensorEndpointX(i), gameEntity2.getWallSensorEndpointY(i), 1);
+
+            shapeRenderer.circle(gameEntity2.getWallSensorEndpointX(i), gameEntity2.getWallSensorEndpointY(i), 4);
+        }
+
+        shapeRenderer.end();
     }
 
     private void initializeGameAssets()
@@ -101,5 +132,7 @@ public class GameRenderer
     {
         playerEntityTextureRegion = AssetLoader.playerEntityTextureRegion;
         gameEntityTextureRegion = AssetLoader.gameEntityTextureRegion;
+        wallTileTexture = AssetLoader.wallTileTexture;
+        floorTileTexture = AssetLoader.floorTileTexture;
     }
 }

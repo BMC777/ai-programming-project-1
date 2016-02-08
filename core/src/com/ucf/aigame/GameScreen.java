@@ -10,6 +10,8 @@ public class GameScreen implements Screen
 {
     private GameWorld gameWorld;
     private GameRenderer gameRenderer;
+    private CollisionDetector collisionDetector;
+
     private float runTime;
 
     public GameScreen()
@@ -19,8 +21,9 @@ public class GameScreen implements Screen
         int midPointX = (int)(screenWidth / 2);
         int midPointY = (int)(screenHeight / 2);
 
-        gameWorld = new GameWorld(midPointX, midPointY);
+        gameWorld = new GameWorld(midPointX, midPointY, screenWidth, screenHeight);
         gameRenderer = new GameRenderer(gameWorld, screenWidth, screenHeight);
+        collisionDetector = new CollisionDetector(gameWorld);
 
         PlayerEntity playerEntity = gameWorld.getPlayerEntity();
         InputHandler inputHandler = new InputHandler(playerEntity);
@@ -38,6 +41,7 @@ public class GameScreen implements Screen
     {
         runTime += delta;
         gameWorld.update(delta);
+        collisionDetector.checkCollisions();
         gameRenderer.render(runTime);
     }
 
