@@ -2,6 +2,7 @@ package com.ucf.aigame;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 
@@ -18,6 +19,16 @@ public class CollisionDetector
 
     private ArrayList<WallObject> wallList;
 
+    private Rectangle currentPlayerCollisionBox;
+    private Rectangle currentWallCollisionBox;
+
+    private Vector2 leftPoint;
+    private Vector2 rightPoint;
+    private Vector2 upPoint;
+    private Vector2 downPoint;
+    private Vector2 centerPoint;
+
+    private boolean[] collisionDetectionArray;
 
     CollisionDetector (GameWorld gameWorld)
     {
@@ -26,16 +37,60 @@ public class CollisionDetector
         this.gameEntity2 = gameWorld.getGameEntity2();
         this.wallList = gameWorld.getWallList();
 
+        leftPoint = new Vector2();
+        rightPoint = new Vector2();
+        upPoint = new Vector2();
+        downPoint = new Vector2();
+        centerPoint = new Vector2();
+
         intersector = new Intersector();
+        collisionDetectionArray = new boolean[4];
     }
 
     public void checkCollisions()
     {
+        for (int x = 0; x < 4; x++)
+        {
+            collisionDetectionArray[x] = false;
+        }
+
+        currentPlayerCollisionBox = playerEntity.getCollisionBox();
+
         for (int i = 0; i < wallList.size(); i++)
         {
-            if (intersector.overlaps(playerEntity.getCollisionBox(), wallList.get(i).getCollisionBox()))
+            currentWallCollisionBox = wallList.get(i).getCollisionBox();
+            if (intersector.overlaps(currentPlayerCollisionBox, currentWallCollisionBox))
             {
-                playerEntity.collisionStop(); //Not working
+                playerEntity.setCollisionNotification(true);
+
+                currentWallCollisionBox.getCenter(centerPoint);
+                upPoint.set(centerPoint).add(0, currentWallCollisionBox.getHeight() / 2);
+                downPoint.set(centerPoint).sub(0, currentWallCollisionBox.getHeight() / 2);
+                leftPoint.set(centerPoint).sub(currentWallCollisionBox.getWidth() / 2, 0);
+                rightPoint.set(centerPoint).add(currentWallCollisionBox.getWidth() / 2, 0);
+
+                if (currentPlayerCollisionBox.contains(rightPoint))
+                {
+                    collisionDetectionArray[2] = true;
+                }
+
+                if (currentPlayerCollisionBox.contains(leftPoint))
+                {
+                    collisionDetectionArray[3] = true;
+                }
+
+                if (currentPlayerCollisionBox.contains(upPoint))
+                {
+                    collisionDetectionArray[1] = true;
+                }
+
+                if (currentPlayerCollisionBox.contains(downPoint))
+                {
+                    collisionDetectionArray[0] = true;
+                }
+
+                playerEntity.setCollisionDetection(collisionDetectionArray[0], collisionDetectionArray[1],
+                        collisionDetectionArray[2], collisionDetectionArray[3]);
             }
         }
     }

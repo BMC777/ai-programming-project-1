@@ -17,6 +17,12 @@ public class PlayerEntity
     private Vector2 currentPlayerHeading;   //Direction player is facing (Should always be Normalized)
     private Vector2 nextPlayerHeading;
 
+    boolean collisionUp;
+    boolean collisionDown;
+    boolean collisionLeft;
+    boolean collisionRight;
+    boolean currentlyHaveCollision;
+
     private int inputX;
     private int inputY;
 
@@ -71,12 +77,29 @@ public class PlayerEntity
         nextPlayerVelocity.rotate(rotationAngle - 90);  //Rotating the vector to match the Sprite
         currentPlayerVelocity.set(nextPlayerVelocity);  //Update the current velocity
 
+        if (currentlyHaveCollision)
+        {
+            if (collisionUp && currentPlayerVelocity.y > 0)
+                currentPlayerVelocity.y = 0;
+
+            if (collisionDown && currentPlayerHeading.y < 0)
+                currentPlayerVelocity.y = 0;
+
+            if (collisionLeft && currentPlayerHeading.x < 0)
+                currentPlayerVelocity.x = 0;
+
+            if (collisionRight && currentPlayerHeading.x > 0)
+                currentPlayerVelocity.x = 0;
+        }
+
         //Update World position, scaling velocity over timeSinceLastUpdate
         xCurrentWorldPosition += currentPlayerVelocity.x * timeSinceLastUpdate;
         yCurrentWorldPosition += currentPlayerVelocity.y * timeSinceLastUpdate;
 
         collisionBox.setPosition(xCurrentWorldPosition, yCurrentWorldPosition);
         wallSensor.update(currentPlayerHeading);
+
+        currentlyHaveCollision = false;
     }
 
     //Updated by InputHandler
@@ -170,8 +193,16 @@ public class PlayerEntity
         return collisionBox;
     }
 
-    public void collisionStop()
+    public void setCollisionDetection(boolean collisionUp, boolean collisionDown, boolean collisionLeft, boolean collisionRight)
     {
-        currentPlayerVelocity.setZero();
+        this.collisionUp = collisionUp;
+        this.collisionDown = collisionDown;
+        this.collisionLeft = collisionLeft;
+        this.collisionRight = collisionRight;
+    }
+
+    public void setCollisionNotification(boolean currentlyHaveCollision)
+    {
+        this.currentlyHaveCollision = currentlyHaveCollision;
     }
 }
