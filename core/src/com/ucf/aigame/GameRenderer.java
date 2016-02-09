@@ -139,7 +139,7 @@ public class GameRenderer
                         gameWorld.getEntityList().get(i).getWidth());
 
                 // Draw Relative Heading
-                shapeRenderer.rectLine(playerEntity.getvOrigin(), gameWorld.getEntityList().get(i).getEntityCenter(), 5);
+                shapeRenderer.rectLine(playerEntity.getvOrigin(), gameWorld.getEntityList().get(i).getEntityCenter(), 1);
             }
         }
 
