@@ -1,8 +1,8 @@
 package com.ucf.aigame;
 
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.MathUtils;
 
 /**
  * Created by Bryan on 2/3/2016.
@@ -11,6 +11,7 @@ public class PlayerEntity
 {
     private Rectangle collisionBox;
     private WallSensor wallSensor;
+    private AdjacentAgentSensor radar;
 
     private Vector2 currentPlayerVelocity;
     private Vector2 nextPlayerVelocity;
@@ -53,6 +54,8 @@ public class PlayerEntity
 
         wallSensor = new WallSensor(playerWidth * 5 + 16);
         collisionBox = new Rectangle(xCurrentWorldPosition, yCurrentWorldPosition, playerWidth, playerHeight);
+
+        radar = new AdjacentAgentSensor(playerWidth * 6, xCurrentWorldPosition+xPlayerOrigin, yCurrentWorldPosition+yPlayerOrigin);
     }
 
     public void update(float timeSinceLastUpdate)
@@ -77,6 +80,8 @@ public class PlayerEntity
 
         collisionBox.setPosition(xCurrentWorldPosition, yCurrentWorldPosition);
         wallSensor.update(currentPlayerHeading);
+
+        radar.update(xCurrentWorldPosition+xPlayerOrigin, yCurrentWorldPosition+yPlayerOrigin);
     }
 
     //Updated by InputHandler
@@ -174,4 +179,17 @@ public class PlayerEntity
     {
         currentPlayerVelocity.setZero();
     }
+
+    public Vector2 getvDirection() {
+        return radar.getvDirection();
+    }
+
+    public Vector2 getvOrigin() {
+        return radar.getvOrigin();
+    }
+
+    public Circle getAdjecentAgentSensor() {
+        return radar.getSensor();
+    }
+
 }

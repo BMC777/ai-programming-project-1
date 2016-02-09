@@ -12,6 +12,7 @@ public class GameWorld
     private GameEntity gameEntity2;
 
     private ArrayList<WallObject> wallObjectArrayList;
+    private ArrayList<GameEntity> gameEntityArrayList;
 
     private static final float TILE_DIMENSIONS = 32;
 
@@ -20,6 +21,10 @@ public class GameWorld
         playerEntity = new PlayerEntity(midPointX, midPointY, TILE_DIMENSIONS, TILE_DIMENSIONS);
         gameEntity1 = new GameEntity(64, 544, TILE_DIMENSIONS, TILE_DIMENSIONS);
         gameEntity2 = new GameEntity(544, 544, TILE_DIMENSIONS, TILE_DIMENSIONS);
+
+        gameEntityArrayList = new ArrayList<GameEntity>();
+        gameEntityArrayList.add(gameEntity1);
+        gameEntityArrayList.add(gameEntity2);
 
         wallObjectArrayList = new ArrayList<WallObject>();
 
@@ -61,5 +66,9 @@ public class GameWorld
     public ArrayList<WallObject> getWallList()
     {
         return wallObjectArrayList;
+    }
+
+    public ArrayList<GameEntity> getEntityList() {
+        return gameEntityArrayList;
     }
 }

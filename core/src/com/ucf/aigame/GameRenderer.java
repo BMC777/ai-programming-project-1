@@ -119,6 +119,31 @@ public class GameRenderer
         }
 
         shapeRenderer.end();
+
+        // AdjacentAgentSensor
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+
+        // Draw AdjacentAgentSensor Circle
+        shapeRenderer.circle(playerEntity.getAdjecentAgentSensor().x, playerEntity.getAdjecentAgentSensor().y,
+                playerEntity.getAdjecentAgentSensor().radius);
+
+        // Check all GameEntities
+        for (int i = 0; i < gameWorld.getEntityList().size(); i++) {
+
+            // Check if detected by AdjacentAgentSensor
+            if ( gameWorld.getEntityList().get(i).isDetected() ) {
+
+                // Draw Circle
+                shapeRenderer.circle(gameWorld.getEntityList().get(i).getEntityCenter().x,
+                        gameWorld.getEntityList().get(i).getEntityCenter().y,
+                        gameWorld.getEntityList().get(i).getWidth());
+
+                // Draw Relative Heading
+                shapeRenderer.rectLine(playerEntity.getvOrigin(), gameWorld.getEntityList().get(i).getEntityCenter(), 5);
+            }
+        }
+
+        shapeRenderer.end();
     }
 
     private void initializeGameAssets()

@@ -1,6 +1,5 @@
 package com.ucf.aigame;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -11,6 +10,7 @@ public class GameEntity
 {
     private Rectangle collisionBox;
     private WallSensor wallSensor;
+    private boolean detected;
 
     private Vector2 currentEntityVelocity;
     private Vector2 nextEntityVelocity;
@@ -52,6 +52,8 @@ public class GameEntity
 
         wallSensor = new WallSensor(entityWidth * 5 + 16);
         collisionBox = new Rectangle(xCurrentWorldPosition, yCurrentWorldPosition, entityWidth, entityHeight);
+
+        detected = false;
 
     }
 
@@ -145,6 +147,10 @@ public class GameEntity
         return yEntityOrigin;
     }
 
+    public Vector2 getEntityCenter() {
+        return new Vector2(xCurrentWorldPosition + xEntityOrigin, yCurrentWorldPosition + yEntityOrigin);
+    }
+
     public Vector2 getEntityHeading()
     {
         return currentEntityHeading;
@@ -173,5 +179,13 @@ public class GameEntity
     public Rectangle getCollisionBox()
     {
         return collisionBox;
+    }
+
+    public void setDetection(boolean newValue) {
+        detected = newValue;
+    }
+
+    public boolean isDetected() {
+        return detected;
     }
 }

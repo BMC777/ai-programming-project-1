@@ -1,7 +1,6 @@
 package com.ucf.aigame;
 
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
 
@@ -17,6 +16,7 @@ public class CollisionDetector
     private GameEntity gameEntity2;
 
     private ArrayList<WallObject> wallList;
+    private ArrayList<GameEntity> entityList;
 
 
     CollisionDetector (GameWorld gameWorld)
@@ -25,6 +25,7 @@ public class CollisionDetector
         this.gameEntity1 = gameWorld.getGameEntity1();
         this.gameEntity2 = gameWorld.getGameEntity2();
         this.wallList = gameWorld.getWallList();
+        this.entityList = gameWorld.getEntityList();
 
         intersector = new Intersector();
     }
@@ -36,6 +37,16 @@ public class CollisionDetector
             if (intersector.overlaps(playerEntity.getCollisionBox(), wallList.get(i).getCollisionBox()))
             {
                 playerEntity.collisionStop(); //Not working
+            }
+        }
+
+        for (int i = 0; i < entityList.size(); i++) {
+            // Check collision between AdjacentAgentSensor and GameEntity
+            if (intersector.overlaps(playerEntity.getAdjecentAgentSensor(), entityList.get(i).getCollisionBox())) {
+                entityList.get(i).setDetection(true);
+            }
+            else {
+                entityList.get(i).setDetection(false);
             }
         }
     }
