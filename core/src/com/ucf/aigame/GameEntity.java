@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Vector2;
 public class GameEntity
 {
     private Rectangle collisionBox;
-    //private WallSensor wallSensor;
     private boolean detected;
 
     private Vector2 currentEntityVelocity;
@@ -50,7 +49,6 @@ public class GameEntity
         currentEntityVelocity = new Vector2();                      //Velocity is initially 0
         nextEntityVelocity = new Vector2(currentEntityVelocity);
 
-        //wallSensor = new WallSensor(entityWidth * 5 + 16, currentEntityHeading);
         collisionBox = new Rectangle(xCurrentWorldPosition, yCurrentWorldPosition, entityWidth, entityHeight);
 
         detected = false;
@@ -78,7 +76,6 @@ public class GameEntity
         yCurrentWorldPosition += currentEntityVelocity.y * timeSinceLastUpdate;
 
         collisionBox.setPosition(xCurrentWorldPosition, yCurrentWorldPosition);
-        //wallSensor.update(currentEntityHeading);
     }
 
     //Updated by InputHandler
@@ -155,21 +152,6 @@ public class GameEntity
     public Vector2 getEntityHeading()
     {
         return currentEntityHeading;
-    }
-
-    /*public float getWallSensorEndpointX(int i)
-    {
-        return wallSensor.getSensor(i).x + xCurrentWorldPosition + xEntityOrigin;
-    }
-
-    public float getWallSensorEndpointY(int i)
-    {
-        return wallSensor.getSensor(i).y + yCurrentWorldPosition + yEntityOrigin;
-    }*/
-
-    public float getWallSensorOriginX()
-    {
-        return xCurrentWorldPosition + xEntityOrigin;
     }
 
     public float getWallSensorOriginY()

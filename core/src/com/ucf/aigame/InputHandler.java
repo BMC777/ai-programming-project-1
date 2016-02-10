@@ -11,8 +11,9 @@ import com.badlogic.gdx.InputProcessor;
 public class InputHandler implements InputProcessor
 {
     private PlayerEntity playerEntity;
+    private Debugger debugger;
 
-    public InputHandler(PlayerEntity playerEntity)
+    public InputHandler(PlayerEntity playerEntity, Debugger debugger)
     {
         this.playerEntity = playerEntity;
     }
