@@ -13,7 +13,6 @@ public class AdjacentAgentSensor {
 
     private float sensorRange;
     private Vector2 vOrigin;
-    private Vector2 vDirection;
 
     private Circle sensor;
 
@@ -21,7 +20,6 @@ public class AdjacentAgentSensor {
 
         this.sensorRange = sensorRange;
         vOrigin = new Vector2(xOrigin, yOrigin);
-        //vDirection = new Vector2().limit(sensorRange);
 
         sensor = new Circle(vOrigin, sensorRange);
     }
@@ -32,23 +30,8 @@ public class AdjacentAgentSensor {
         // Recenter the axis of rotation
         vOrigin.set(xOrigin, yOrigin);
 
-        /*
-        // Increment angle, reset every 360 degrees
-        currentAngle += ROTATION_SPEED;
-        if (currentAngle >= 360) {
-            currentAngle = 0;
-        }
-
-        // Set Vector to new angle, limit distance
-        vDirection.setAngle(currentAngle);
-        vDirection.limit(sensorRange); // */
-
         // Recenter Circle
         sensor.setPosition(vOrigin);
-    }
-
-    public Vector2 getvDirection() {
-        return vDirection;
     }
 
     public Vector2 getvOrigin() {

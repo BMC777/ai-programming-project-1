@@ -12,6 +12,7 @@ public class PlayerEntity
     private Rectangle collisionBox;
     private WallSensor wallSensor;
     private AdjacentAgentSensor radar;
+    private PieSliceSensor pieSliceSensor;
 
     private Vector2 currentPlayerVelocity;
     private Vector2 nextPlayerVelocity;
@@ -35,7 +36,6 @@ public class PlayerEntity
     private float yCurrentWorldPosition;
 
     private float rotationAngle; //Angle between current and next Heading
-    private float wallSensorMaxRange;
 
     private static final float BASE_VELOCITY = 125;
     private static final Vector2 REFERENCE_VECTOR = new Vector2(1, 0);  //Normalized Vector pointing to 0 degrees
@@ -59,12 +59,11 @@ public class PlayerEntity
         currentPlayerVelocity = new Vector2();                      //Velocity is initially 0
         nextPlayerVelocity = new Vector2(currentPlayerVelocity);
 
-        wallSensorMaxRange = playerWidth * 5 + 16;
-
-        wallSensor = new WallSensor(wallSensorMaxRange, currentPlayerHeading);
+        wallSensor = new WallSensor(playerWidth * 5 + 16);
         collisionBox = new Rectangle(xCurrentWorldPosition, yCurrentWorldPosition, playerWidth, playerHeight);
 
         radar = new AdjacentAgentSensor(playerWidth * 6, xCurrentWorldPosition+xPlayerOrigin, yCurrentWorldPosition+yPlayerOrigin);
+        pieSliceSensor = new PieSliceSensor(currentPlayerHeading, playerWidth * 6);
     }
 
     public void update(float timeSinceLastUpdate)
@@ -105,7 +104,8 @@ public class PlayerEntity
         collisionBox.setPosition(xCurrentWorldPosition, yCurrentWorldPosition);
         wallSensor.update(currentPlayerHeading);
 
-        radar.update(xCurrentWorldPosition+xPlayerOrigin, yCurrentWorldPosition+yPlayerOrigin);
+        radar.update(xCurrentWorldPosition + xPlayerOrigin, yCurrentWorldPosition + yPlayerOrigin);
+        pieSliceSensor.update(currentPlayerHeading);
 
         currentlyHaveCollision = false;
     }
@@ -178,17 +178,12 @@ public class PlayerEntity
 
     public float getWallSensorEndpointX(int i)
     {
-        return wallSensor.getSensor(i).x + xCurrentWorldPosition + xPlayerOrigin;
+        return wallSensor.getSensorArray(i).x + xCurrentWorldPosition + xPlayerOrigin;
     }
 
     public float getWallSensorEndpointY(int i)
     {
-        return wallSensor.getSensor(i).y + yCurrentWorldPosition + yPlayerOrigin;
-    }
-
-    public Vector2[] getWallSensorArray()
-    {
-        return wallSensor.getSensorArray();
+        return wallSensor.getSensorArray(i).y + yCurrentWorldPosition + yPlayerOrigin;
     }
 
     public float getWallSensorOriginX()
@@ -200,16 +195,6 @@ public class PlayerEntity
     {
         return yCurrentWorldPosition + yPlayerOrigin;
     }
-
-    public float getWallSensorMaxRange()
-    {
-        return wallSensorMaxRange;
-    }
-
-    /*public void setWallSensor(float length, int sensorNumber)
-    {
-        wallSensor.setSensorLengthFromCollision(length, sensorNumber);
-    }*/
 
     public Rectangle getCollisionBox()
     {
@@ -229,21 +214,20 @@ public class PlayerEntity
         this.currentlyHaveCollision = currentlyHaveCollision;
     }
 
-    public void setWallSensorLength(float length, int index)
-    {
-        wallSensor.setLength(length, index);
-    }
-
-    public Vector2 getvDirection() {
-        return radar.getvDirection();
-    }
-
     public Vector2 getvOrigin() {
         return radar.getvOrigin();
     }
 
+    public Vector2 getCurrentHeading() {
+        return currentPlayerHeading;
+    }
+
     public Circle getAdjecentAgentSensor() {
         return radar.getSensor();
+    }
+
+    public PieSliceSensor getPieSliceSensor() {
+        return pieSliceSensor;
     }
 
 }
