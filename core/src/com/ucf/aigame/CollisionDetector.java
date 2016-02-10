@@ -29,6 +29,7 @@ public class CollisionDetector
     private Vector2 upPoint;
     private Vector2 downPoint;
     private Vector2 centerPoint;
+    private Vector2 scalingSensor;
 
     private boolean[] collisionDetectionArray;
 
@@ -45,6 +46,7 @@ public class CollisionDetector
         upPoint = new Vector2();
         downPoint = new Vector2();
         centerPoint = new Vector2();
+        scalingSensor = new Vector2();
 
         intersector = new Intersector();
         collisionDetectionArray = new boolean[4];
@@ -62,6 +64,8 @@ public class CollisionDetector
         for (int i = 0; i < wallList.size(); i++)
         {
             currentWallCollisionBox = wallList.get(i).getCollisionBox();
+
+            //Looking for player collision with walls
             if (intersector.overlaps(currentPlayerCollisionBox, currentWallCollisionBox))
             {
                 playerEntity.setCollisionNotification(true);
@@ -95,6 +99,31 @@ public class CollisionDetector
                 playerEntity.setCollisionDetection(collisionDetectionArray[0], collisionDetectionArray[1],
                         collisionDetectionArray[2], collisionDetectionArray[3]);
             }
+
+            for (int j = 0; j < playerEntity.getWallSensorArray().length; j++)
+            {
+                scalingSensor.set(playerEntity.getWallSensorArray()[j]);
+                scalingSensor.nor();
+                Vector2 tempSensorOrigin = new Vector2(playerEntity.getWallSensorOriginX(), playerEntity.getWallSensorOriginY());
+                Vector2 tempSensorEndpoints = new Vector2(playerEntity.getWallSensorEndpointX(j), playerEntity.getWallSensorEndpointY(j));
+                Vector2 length = new Vector2();
+                boolean changedSensor = false;
+
+
+                while (currentWallCollisionBox.contains(tempSensorEndpoints))
+                {
+                    tempSensorEndpoints.sub(scalingSensor);
+                    changedSensor = true;
+                }
+
+                length.set(tempSensorEndpoints.sub(tempSensorOrigin));
+
+                if (changedSensor)
+                {
+                    playerEntity.setWallSensorLength(length.len(), j);
+                }
+            }
+
         }
 
         for (int i = 0; i < entityList.size(); i++) {

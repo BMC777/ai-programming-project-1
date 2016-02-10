@@ -22,8 +22,8 @@ public class GameScreen implements Screen
         int midPointY = (int)(screenHeight / 2);
 
         gameWorld = new GameWorld(midPointX, midPointY, screenWidth, screenHeight);
-        gameRenderer = new GameRenderer(gameWorld, screenWidth, screenHeight);
         collisionDetector = new CollisionDetector(gameWorld);
+        gameRenderer = new GameRenderer(gameWorld, collisionDetector, screenWidth, screenHeight);
 
         PlayerEntity playerEntity = gameWorld.getPlayerEntity();
         InputHandler inputHandler = new InputHandler(playerEntity);

@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 public class GameEntity
 {
     private Rectangle collisionBox;
-    private WallSensor wallSensor;
+    //private WallSensor wallSensor;
     private boolean detected;
 
     private Vector2 currentEntityVelocity;
@@ -50,7 +50,7 @@ public class GameEntity
         currentEntityVelocity = new Vector2();                      //Velocity is initially 0
         nextEntityVelocity = new Vector2(currentEntityVelocity);
 
-        wallSensor = new WallSensor(entityWidth * 5 + 16);
+        //wallSensor = new WallSensor(entityWidth * 5 + 16, currentEntityHeading);
         collisionBox = new Rectangle(xCurrentWorldPosition, yCurrentWorldPosition, entityWidth, entityHeight);
 
         detected = false;
@@ -78,7 +78,7 @@ public class GameEntity
         yCurrentWorldPosition += currentEntityVelocity.y * timeSinceLastUpdate;
 
         collisionBox.setPosition(xCurrentWorldPosition, yCurrentWorldPosition);
-        wallSensor.update(currentEntityHeading);
+        //wallSensor.update(currentEntityHeading);
     }
 
     //Updated by InputHandler
@@ -147,7 +147,8 @@ public class GameEntity
         return yEntityOrigin;
     }
 
-    public Vector2 getEntityCenter() {
+    public Vector2 getEntityCenter()
+    {
         return new Vector2(xCurrentWorldPosition + xEntityOrigin, yCurrentWorldPosition + yEntityOrigin);
     }
 
@@ -156,15 +157,15 @@ public class GameEntity
         return currentEntityHeading;
     }
 
-    public float getWallSensorEndpointX(int i)
+    /*public float getWallSensorEndpointX(int i)
     {
-        return wallSensor.getSensorArray(i).x + xCurrentWorldPosition + xEntityOrigin;
+        return wallSensor.getSensor(i).x + xCurrentWorldPosition + xEntityOrigin;
     }
 
     public float getWallSensorEndpointY(int i)
     {
-        return wallSensor.getSensorArray(i).y + yCurrentWorldPosition + yEntityOrigin;
-    }
+        return wallSensor.getSensor(i).y + yCurrentWorldPosition + yEntityOrigin;
+    }*/
 
     public float getWallSensorOriginX()
     {

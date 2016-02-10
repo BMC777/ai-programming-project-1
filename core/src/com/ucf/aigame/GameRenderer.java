@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public class GameRenderer
 {
     private GameWorld gameWorld;
+    private CollisionDetector collisionDetector;
     private OrthographicCamera camera;
     private SpriteBatch batcher;
     private ShapeRenderer shapeRenderer;
@@ -32,9 +33,10 @@ public class GameRenderer
 
     private static final float TILE_DIMENSIONS = 32;
 
-    public GameRenderer(GameWorld gameWorld, float gameWidth, float gameHeight)
+    public GameRenderer(GameWorld gameWorld,CollisionDetector collisionDetector, float gameWidth, float gameHeight)
     {
         this.gameWorld = gameWorld;
+        this.collisionDetector = collisionDetector;
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
 
@@ -107,7 +109,7 @@ public class GameRenderer
 
             shapeRenderer.circle(playerEntity.getWallSensorEndpointX(i), playerEntity.getWallSensorEndpointY(i), 4);
 
-            shapeRenderer.rectLine(gameEntity1.getWallSensorOriginX(), gameEntity1.getWallSensorOriginY(),
+            /*shapeRenderer.rectLine(gameEntity1.getWallSensorOriginX(), gameEntity1.getWallSensorOriginY(),
                     gameEntity1.getWallSensorEndpointX(i), gameEntity1.getWallSensorEndpointY(i), 1);
 
             shapeRenderer.circle(gameEntity1.getWallSensorEndpointX(i), gameEntity1.getWallSensorEndpointY(i), 4);
@@ -115,7 +117,7 @@ public class GameRenderer
             shapeRenderer.rectLine(gameEntity2.getWallSensorOriginX(), gameEntity2.getWallSensorOriginY(),
                     gameEntity2.getWallSensorEndpointX(i), gameEntity2.getWallSensorEndpointY(i), 1);
 
-            shapeRenderer.circle(gameEntity2.getWallSensorEndpointX(i), gameEntity2.getWallSensorEndpointY(i), 4);
+            shapeRenderer.circle(gameEntity2.getWallSensorEndpointX(i), gameEntity2.getWallSensorEndpointY(i), 4);*/
         }
 
         shapeRenderer.end();
