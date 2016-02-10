@@ -59,7 +59,7 @@ public class PlayerEntity
         currentPlayerVelocity = new Vector2();                      //Velocity is initially 0
         nextPlayerVelocity = new Vector2(currentPlayerVelocity);
 
-        wallSensor = new WallSensor(playerWidth * 5 + 16);
+        wallSensor = new WallSensor(playerWidth * 6);
         collisionBox = new Rectangle(xCurrentWorldPosition, yCurrentWorldPosition, playerWidth, playerHeight);
 
         radar = new AdjacentAgentSensor(playerWidth * 6, xCurrentWorldPosition+xPlayerOrigin, yCurrentWorldPosition+yPlayerOrigin);
@@ -178,12 +178,12 @@ public class PlayerEntity
 
     public float getWallSensorEndpointX(int i)
     {
-        return wallSensor.getSensorArray(i).x + xCurrentWorldPosition + xPlayerOrigin;
+        return wallSensor.getSensor(i).x + xCurrentWorldPosition + xPlayerOrigin;
     }
 
     public float getWallSensorEndpointY(int i)
     {
-        return wallSensor.getSensorArray(i).y + yCurrentWorldPosition + yPlayerOrigin;
+        return wallSensor.getSensor(i).y + yCurrentWorldPosition + yPlayerOrigin;
     }
 
     public float getWallSensorOriginX()
@@ -191,9 +191,19 @@ public class PlayerEntity
         return xCurrentWorldPosition + xPlayerOrigin;
     }
 
+    public Vector2[] getWallSensorArray()
+    {
+        return wallSensor.getWallSensorArray();
+    }
+
     public float getWallSensorOriginY()
     {
         return yCurrentWorldPosition + yPlayerOrigin;
+    }
+
+    public void setWallSensorLength(float length, int index)
+    {
+        wallSensor.setLength(length, index);
     }
 
     public Rectangle getCollisionBox()

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -17,6 +18,7 @@ public class GameRenderer
     private OrthographicCamera camera;
     private SpriteBatch batcher;
     private ShapeRenderer shapeRenderer;
+    private BitmapFont bitmapFont;
 
     private TextureRegion playerEntityTextureRegion;
     private TextureRegion gameEntityTextureRegion;
@@ -51,6 +53,8 @@ public class GameRenderer
 
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(camera.combined);
+
+        bitmapFont = new BitmapFont();
 
         initializeGameAssets();
         initializeAssets();
@@ -101,23 +105,14 @@ public class GameRenderer
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
+
+        //For Wall Sensors
         for (int i = 0; i < 5; i++)
         {
-
             shapeRenderer.rectLine(playerEntity.getWallSensorOriginX(), playerEntity.getWallSensorOriginY(),
                     playerEntity.getWallSensorEndpointX(i), playerEntity.getWallSensorEndpointY(i), 1);
 
             shapeRenderer.circle(playerEntity.getWallSensorEndpointX(i), playerEntity.getWallSensorEndpointY(i), 4);
-
-            shapeRenderer.rectLine(gameEntity1.getWallSensorOriginX(), gameEntity1.getWallSensorOriginY(),
-                    gameEntity1.getWallSensorEndpointX(i), gameEntity1.getWallSensorEndpointY(i), 1);
-
-            shapeRenderer.circle(gameEntity1.getWallSensorEndpointX(i), gameEntity1.getWallSensorEndpointY(i), 4);
-
-            shapeRenderer.rectLine(gameEntity2.getWallSensorOriginX(), gameEntity2.getWallSensorOriginY(),
-                    gameEntity2.getWallSensorEndpointX(i), gameEntity2.getWallSensorEndpointY(i), 1);
-
-            shapeRenderer.circle(gameEntity2.getWallSensorEndpointX(i), gameEntity2.getWallSensorEndpointY(i), 4);
         }
 
         shapeRenderer.end();
@@ -217,6 +212,26 @@ public class GameRenderer
         playerEntity.getPieSliceSensor().resetActivationLevels();
 
         shapeRenderer.end();
+
+
+
+
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+
+        shapeRenderer.setColor(0, 0, 0, 1);
+        shapeRenderer.rect(0, 0, 128, 24);
+        shapeRenderer.setColor(0/255f, 34/255f, 255/255f, 0);
+        shapeRenderer.rect(2, 2, 124, 20);
+
+        shapeRenderer.setColor(255, 255, 255, 1);
+        shapeRenderer.end();
+
+        batcher.begin();
+        bitmapFont.setColor(0/255f, 255/255f, 43/255f, 1);
+        bitmapFont.draw(batcher, "Debugger ON", 16, 18);
+        batcher.end();
     }
 
     private void initializeGameAssets()

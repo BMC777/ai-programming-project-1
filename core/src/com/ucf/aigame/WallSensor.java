@@ -12,24 +12,21 @@ public class WallSensor
     private float wallSensorRange;
 
     private boolean collisionArray[];
-    private Vector2 collisionLengthArray[];
     private float lengthArray[];
 
     private static final int NUMBER_OF_RAYS = 5;
 
-    WallSensor(float wallSensorRange, Vector2 currentHeading)
+    WallSensor(float wallSensorRange)
     {
         this.wallSensorRange = wallSensorRange;
 
         wallSensorArray = new Vector2[NUMBER_OF_RAYS];
-        collisionLengthArray = new Vector2[NUMBER_OF_RAYS];
         collisionArray = new boolean[NUMBER_OF_RAYS];
         lengthArray = new float[NUMBER_OF_RAYS];
 
         for (int i = 0; i < NUMBER_OF_RAYS; i++)
         {
             wallSensorArray[i] = new Vector2();
-            collisionLengthArray[i] = new Vector2();
             collisionArray[i] = false;
             lengthArray[i] = wallSensorRange;
         }
@@ -64,7 +61,7 @@ public class WallSensor
         return wallSensorArray[i];
     }
 
-    public Vector2[] getSensorArray()
+    public Vector2[] getWallSensorArray()
     {
         return wallSensorArray;
     }

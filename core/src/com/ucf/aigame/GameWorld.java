@@ -11,6 +11,7 @@ public class GameWorld
     private GameEntity gameEntity1;
     private GameEntity gameEntity2;
 
+
     private ArrayList<WallObject> wallObjectArrayList;
     private ArrayList<GameEntity> gameEntityArrayList;
 
