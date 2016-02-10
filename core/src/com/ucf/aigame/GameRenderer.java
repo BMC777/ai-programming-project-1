@@ -121,7 +121,6 @@ public class GameRenderer
         }
 
         shapeRenderer.end();
-
         
         // For AdjacentAgentSensor
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
