@@ -32,6 +32,8 @@ public class GameRenderer
 
     private static final float TILE_DIMENSIONS = 32;
 
+    private float tempFloat = 0;
+
     public GameRenderer(GameWorld gameWorld, float gameWidth, float gameHeight)
     {
         this.gameWorld = gameWorld;
@@ -120,7 +122,8 @@ public class GameRenderer
 
         shapeRenderer.end();
 
-        // AdjacentAgentSensor
+        
+        // For AdjacentAgentSensor
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         // Draw AdjacentAgentSensor Circle
@@ -132,6 +135,7 @@ public class GameRenderer
 
             // Check if detected by AdjacentAgentSensor
             if ( gameWorld.getEntityList().get(i).isDetected() ) {
+                shapeRenderer.setColor(255, 0, 0, 1);
 
                 // Draw Circle
                 shapeRenderer.circle(gameWorld.getEntityList().get(i).getEntityCenter().x,
@@ -140,8 +144,77 @@ public class GameRenderer
 
                 // Draw Relative Heading
                 shapeRenderer.rectLine(playerEntity.getvOrigin(), gameWorld.getEntityList().get(i).getEntityCenter(), 1);
+
+                // For: PieSliceSensor (detected)
+                // Identifies Quadrant and increments its Activation Level
+                playerEntity.getPieSliceSensor().identifyQuadrant(
+                        playerEntity.getCurrentHeading(),
+                        gameWorld.getEntityList().get(i).getEntityCenter().sub(playerEntity.getvOrigin()));
             }
         }
+
+        // Activation Levels have been tallied, Now get highest Activation Level and draw / color lines
+
+        // FRONT RIGHT
+        tempFloat = Math.max(playerEntity.getPieSliceSensor().getActivationLevelFRONT(), playerEntity.getPieSliceSensor().getActivationLevelRIGHT());
+        if (tempFloat < 1) { // Green
+            shapeRenderer.setColor(0, 255, 0, 1);
+        }
+        else if (tempFloat == 1) { // Yellow
+            shapeRenderer.setColor(255, 255, 0, 1);
+        }
+        else { // Red
+            shapeRenderer.setColor(255, 0, 0, 1);
+        }
+        shapeRenderer.rectLine(playerEntity.getvOrigin(),
+                playerEntity.getPieSliceSensor().getFrontRight().add(playerEntity.getvOrigin()), 1);
+
+        // FRONT LEFT
+        tempFloat = Math.max(playerEntity.getPieSliceSensor().getActivationLevelFRONT(), playerEntity.getPieSliceSensor().getActivationLevelLEFT());
+        if (tempFloat < 1) { // Green
+            shapeRenderer.setColor(0, 255, 0, 1);
+        }
+        else if (tempFloat == 1) { // Yellow
+            shapeRenderer.setColor(255, 255, 0, 1);
+        }
+        else { // Red
+            shapeRenderer.setColor(255, 0, 0, 1);
+        }
+        shapeRenderer.rectLine(playerEntity.getvOrigin(),
+                playerEntity.getPieSliceSensor().getFrontLeft().add(playerEntity.getvOrigin()), 1);
+
+        // BACK LEFT
+        tempFloat = Math.max(playerEntity.getPieSliceSensor().getActivationLevelBACK(), playerEntity.getPieSliceSensor().getActivationLevelLEFT());
+        if (tempFloat < 1) { // Green
+            shapeRenderer.setColor(0, 255, 0, 1);
+        }
+        else if (tempFloat == 1) { // Yellow
+            shapeRenderer.setColor(255, 255, 0, 1);
+        }
+        else { // Red
+            shapeRenderer.setColor(255, 0, 0, 1);
+        }
+        shapeRenderer.rectLine(playerEntity.getvOrigin(),
+                playerEntity.getPieSliceSensor().getBackLeft().add(playerEntity.getvOrigin()), 1);
+
+        // BACK RIGHT
+        tempFloat = Math.max(playerEntity.getPieSliceSensor().getActivationLevelBACK(), playerEntity.getPieSliceSensor().getActivationLevelRIGHT());
+        if (tempFloat < 1) { // Green
+            shapeRenderer.setColor(0, 255, 0, 1);
+        }
+        else if (tempFloat == 1) { // Yellow
+            shapeRenderer.setColor(255, 255, 0, 1);
+        }
+        else { // Red
+            shapeRenderer.setColor(255, 0, 0, 1);
+        }
+        shapeRenderer.rectLine(playerEntity.getvOrigin(),
+                playerEntity.getPieSliceSensor().getBackRight().add(playerEntity.getvOrigin()), 1);
+
+
+        // Reset Color to White and Reset PieSliceSensors
+        shapeRenderer.setColor(255, 255, 255, 1);
+        playerEntity.getPieSliceSensor().resetActivationLevels();
 
         shapeRenderer.end();
     }
