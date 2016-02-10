@@ -10,10 +10,22 @@ public class Debugger
     private boolean displayAdjacentAgentSensor;
     private boolean displayPieSliceSensor;
 
-
+    Debugger()
+    {
+        displayDebugger = false;
+        displayWallSensor = false;
+        displayAdjacentAgentSensor = false;
+        displayPieSliceSensor = false;
+    }
 
     public void update()
     {
 
     }
+
+    public boolean getDebugDisplayState()
+    {
+        return displayDebugger;
+    }
+
 }

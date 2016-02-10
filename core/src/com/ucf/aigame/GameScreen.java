@@ -11,7 +11,7 @@ public class GameScreen implements Screen
     private GameWorld gameWorld;
     private GameRenderer gameRenderer;
     private CollisionDetector collisionDetector;
-    private Debugger debugger;
+
 
     private float runTime;
 
@@ -25,8 +25,8 @@ public class GameScreen implements Screen
         gameWorld = new GameWorld(midPointX, midPointY, screenWidth, screenHeight);
         collisionDetector = new CollisionDetector(gameWorld);
         gameRenderer = new GameRenderer(gameWorld, screenWidth, screenHeight);
-        debugger = new Debugger();
 
+        Debugger debugger = new Debugger();
         PlayerEntity playerEntity = gameWorld.getPlayerEntity();
         InputHandler inputHandler = new InputHandler(playerEntity, debugger);
         Gdx.input.setInputProcessor(inputHandler);

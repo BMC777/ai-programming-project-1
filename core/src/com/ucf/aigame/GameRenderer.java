@@ -19,6 +19,7 @@ public class GameRenderer
     private SpriteBatch batcher;
     private ShapeRenderer shapeRenderer;
     private BitmapFont bitmapFont;
+    private Debugger debugger;
 
     private TextureRegion playerEntityTextureRegion;
     private TextureRegion gameEntityTextureRegion;
@@ -62,13 +63,26 @@ public class GameRenderer
 
     public void render(float runTime)
     {
-
         //OpenGL graphics stuff
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        renderBackground();
+
+        renderPlayerEntity();
+        renderGameEntities();
+
+        renderWallSensor();
+        renderAdjacentAgentSensors();
+        renderPieSliceSensor();
+
+        debugDisplay();
+        renderDebugState();
+    }
+
+    private void renderBackground()
+    {
         batcher.begin();
-        batcher.disableBlending();
 
         //Fills the screen with floor and wall tiles.
         for (int x = 0; x < gameWidth; x += TILE_DIMENSIONS)
@@ -86,12 +100,25 @@ public class GameRenderer
             }
         }
 
-        batcher.enableBlending();
+
+        batcher.end();
+    }
+
+    private void renderPlayerEntity()
+    {
+        batcher.begin();
 
         //Drawing the playerEntityTexture
         batcher.draw(playerEntityTextureRegion, playerEntity.getCurrentXPosition(), playerEntity.getCurrentYPosition(),
                 playerEntity.getXPlayerOrigin(), playerEntity.getYPlayerOrigin(), playerEntity.getWidth(), playerEntity.getHeight(),
                 1, 1, playerEntity.getRotationAngle());
+
+        batcher.end();
+    }
+
+    private void renderGameEntities()
+    {
+        batcher.begin();
 
         batcher.draw(gameEntityTextureRegion, gameEntity1.getCurrentXPosition(), gameEntity1.getCurrentYPosition(),
                 gameEntity1.getXEntityOrigin(), gameEntity1.getYEntityOrigin(), gameEntity1.getWidth(), gameEntity1.getHeight(),
@@ -102,11 +129,43 @@ public class GameRenderer
                 1, 1, gameEntity2.getRotationAngle());
 
         batcher.end();
+    }
 
+    private void renderDebugState()
+    {
+        batcher.begin();
+
+        if (debugger.getDebugDisplayState())
+        {
+            bitmapFont.setColor(0/255f, 255/255f, 43/255f, 1);
+            bitmapFont.draw(batcher, "Debugger ON", 16, 18);
+        }
+        else
+        {
+            bitmapFont.setColor(255/255f, 0/255f, 0/255f, 1);
+            bitmapFont.draw(batcher, "Debugger OFF", 16, 18);
+        }
+
+        batcher.end();
+    }
+
+    private void debugDisplay()
+    {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
+        shapeRenderer.setColor(0, 0, 0, 1);
+        shapeRenderer.rect(0, 0, 128, 24);
+        shapeRenderer.setColor(0/255f, 34/255f, 255/255f, 0);
+        shapeRenderer.rect(2, 2, 124, 20);
 
-        //For Wall Sensors
+        shapeRenderer.setColor(255, 255, 255, 1);
+        shapeRenderer.end();
+    }
+
+    private void renderWallSensor()
+    {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
         for (int i = 0; i < 5; i++)
         {
             shapeRenderer.rectLine(playerEntity.getWallSensorOriginX(), playerEntity.getWallSensorOriginY(),
@@ -116,8 +175,10 @@ public class GameRenderer
         }
 
         shapeRenderer.end();
+    }
 
-        
+    private void renderAdjacentAgentSensors()
+    {
         // For AdjacentAgentSensor
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
@@ -140,6 +201,21 @@ public class GameRenderer
                 // Draw Relative Heading
                 shapeRenderer.rectLine(playerEntity.getvOrigin(), gameWorld.getEntityList().get(i).getEntityCenter(), 1);
 
+            }
+        }
+
+        shapeRenderer.end();
+    }
+
+    private void renderPieSliceSensor()
+    {
+
+        for (int i = 0; i < gameWorld.getEntityList().size(); i++) {
+
+            // Check if detected by AdjacentAgentSensor
+            if ( gameWorld.getEntityList().get(i).isDetected() ) {
+                shapeRenderer.setColor(255, 0, 0, 1);
+
                 // For: PieSliceSensor (detected)
                 // Identifies Quadrant and increments its Activation Level
                 playerEntity.getPieSliceSensor().identifyQuadrant(
@@ -147,8 +223,9 @@ public class GameRenderer
                         gameWorld.getEntityList().get(i).getEntityCenter().sub(playerEntity.getvOrigin()));
             }
         }
-
         // Activation Levels have been tallied, Now get highest Activation Level and draw / color lines
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         // FRONT RIGHT
         tempFloat = Math.max(playerEntity.getPieSliceSensor().getActivationLevelFRONT(), playerEntity.getPieSliceSensor().getActivationLevelRIGHT());
@@ -212,26 +289,6 @@ public class GameRenderer
         playerEntity.getPieSliceSensor().resetActivationLevels();
 
         shapeRenderer.end();
-
-
-
-
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-
-        shapeRenderer.setColor(0, 0, 0, 1);
-        shapeRenderer.rect(0, 0, 128, 24);
-        shapeRenderer.setColor(0/255f, 34/255f, 255/255f, 0);
-        shapeRenderer.rect(2, 2, 124, 20);
-
-        shapeRenderer.setColor(255, 255, 255, 1);
-        shapeRenderer.end();
-
-        batcher.begin();
-        bitmapFont.setColor(0/255f, 255/255f, 43/255f, 1);
-        bitmapFont.draw(batcher, "Debugger ON", 16, 18);
-        batcher.end();
     }
 
     private void initializeGameAssets()
@@ -239,6 +296,7 @@ public class GameRenderer
         playerEntity = gameWorld.getPlayerEntity();
         gameEntity1 = gameWorld.getGameEntity1();
         gameEntity2 = gameWorld.getGameEntity2();
+        debugger = gameWorld.getDebugger();
     }
 
     private void initializeAssets()
