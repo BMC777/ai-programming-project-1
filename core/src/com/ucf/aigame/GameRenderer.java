@@ -95,20 +95,18 @@ public class GameRenderer
     {
         batcher.begin();
 
-        //Fills the screen with floor and wall tiles.
+        //Fills the screen with floor tiles.
         for (int x = 0; x < gameWidth; x += TILE_DIMENSIONS)
         {
             for (int y = 0; y < gameHeight; y += TILE_DIMENSIONS)
             {
-                if (x == 0 || x == gameWidth - TILE_DIMENSIONS || y == 0 || y == gameHeight - TILE_DIMENSIONS)
-                {
-                    batcher.draw(wallTileTexture, x, y);
-                }
-                else
-                {
                     batcher.draw(floorTileTexture, x, y);
-                }
             }
+        }
+
+        for (int i = 0; i < gameWorld.getWallList().size(); i++)
+        {
+            batcher.draw(wallTileTexture, gameWorld.getWallList().get(i).getXWorldPosition(), gameWorld.getWallList().get(i).getYWorldPosition());
         }
 
 

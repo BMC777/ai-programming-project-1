@@ -48,6 +48,11 @@ public class GameWorld
         gameEntity2.update(delta);
     }
 
+    public void newWall(float x, float y)
+    {
+        wallObjectArrayList.add(new WallObject(x, y, TILE_DIMENSIONS, TILE_DIMENSIONS));
+    }
+
     public PlayerEntity getPlayerEntity()
     {
         return playerEntity;

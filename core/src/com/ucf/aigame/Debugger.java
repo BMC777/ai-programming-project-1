@@ -9,6 +9,7 @@ public class Debugger
     private GameWorld gameWorld;
 
     private boolean displayDebugger;
+    private boolean wallToolStatus;
 
     private float[] wallSensorLengthArray;
 
@@ -21,6 +22,7 @@ public class Debugger
         playerEntity = gameWorld.getPlayerEntity();
 
         displayDebugger = false;
+        wallToolStatus = false;
 
         wallSensorLengthArray = new float[playerEntity.getWallSensorLengthArray().length];
 
@@ -48,6 +50,21 @@ public class Debugger
     public float getWallSensorLengthOutput(int index)
     {
         return wallSensorLengthArray[index];
+    }
+
+    public void placeWallTool(float x, float y)
+    {
+        gameWorld.newWall(x, y);
+    }
+
+    public void setWallToolStatus(boolean status)
+    {
+        wallToolStatus = status;
+    }
+
+    public boolean getWallToolStatus()
+    {
+        return wallToolStatus;
     }
 
     private void updateWallSensorLengthArray()
