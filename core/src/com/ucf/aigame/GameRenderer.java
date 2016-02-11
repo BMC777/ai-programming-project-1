@@ -27,8 +27,6 @@ public class GameRenderer
     private Texture wallTileTexture;
 
     private PlayerEntity playerEntity;
-    private GameEntity gameEntity1;
-    private GameEntity gameEntity2;
 
     private float gameWidth;
     private float gameHeight;
@@ -96,20 +94,18 @@ public class GameRenderer
     {
         batcher.begin();
 
-        //Fills the screen with floor and wall tiles.
+        //Fills the screen with floor tiles.
         for (int x = 0; x < gameWidth; x += TILE_DIMENSIONS)
         {
             for (int y = 0; y < gameHeight; y += TILE_DIMENSIONS)
             {
-                if (x == 0 || x == gameWidth - TILE_DIMENSIONS || y == 0 || y == gameHeight - TILE_DIMENSIONS)
-                {
-                    batcher.draw(wallTileTexture, x, y);
-                }
-                else
-                {
                     batcher.draw(floorTileTexture, x, y);
-                }
             }
+        }
+
+        for (int i = 0; i < gameWorld.getWallList().size(); i++)
+        {
+            batcher.draw(wallTileTexture, gameWorld.getWallList().get(i).getXWorldPosition(), gameWorld.getWallList().get(i).getYWorldPosition());
         }
 
 
@@ -144,13 +140,15 @@ public class GameRenderer
     {
         batcher.begin();
 
-        batcher.draw(gameEntityTextureRegion, gameEntity1.getCurrentXPosition(), gameEntity1.getCurrentYPosition(),
-                gameEntity1.getXEntityOrigin(), gameEntity1.getYEntityOrigin(), gameEntity1.getWidth(), gameEntity1.getHeight(),
-                1, 1, gameEntity1.getRotationAngle());
+        for (int i = 0; i < gameWorld.getEntityList().size(); i++)
+        {
 
-        batcher.draw(gameEntityTextureRegion, gameEntity2.getCurrentXPosition(), gameEntity2.getCurrentYPosition(),
-                gameEntity2.getXEntityOrigin(), gameEntity2.getYEntityOrigin(), gameEntity2.getWidth(), gameEntity2.getHeight(),
-                1, 1, gameEntity2.getRotationAngle());
+            batcher.draw(gameEntityTextureRegion, gameWorld.getEntityList().get(i).getCurrentXPosition(),
+                    gameWorld.getEntityList().get(i).getCurrentYPosition(),
+                    gameWorld.getEntityList().get(i).getXEntityOrigin(), gameWorld.getEntityList().get(i).getYEntityOrigin(),
+                    gameWorld.getEntityList().get(i).getWidth(), gameWorld.getEntityList().get(i).getHeight(),
+                    1, 1, gameWorld.getEntityList().get(i).getRotationAngle());
+        }
 
         batcher.end();
     }
@@ -339,8 +337,6 @@ public class GameRenderer
     private void initializeGameAssets()
     {
         playerEntity = gameWorld.getPlayerEntity();
-        gameEntity1 = gameWorld.getGameEntity1();
-        gameEntity2 = gameWorld.getGameEntity2();
     }
 
     private void initializeAssets()

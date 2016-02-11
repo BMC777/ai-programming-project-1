@@ -43,6 +43,14 @@ public class InputHandler implements InputProcessor
             case Keys.V:
                 debugger.setDebugDisplayState(!debugger.getDebugDisplayState());
                 return true;
+
+            case Keys.P:
+                debugger.setWallToolStatus(!debugger.getWallToolStatus());
+                return true;
+
+            case Keys.O:
+                debugger.setEntityToolStatus(!debugger.getEntityToolStatus());
+                return true;
         }
 
         return false;
@@ -82,6 +90,17 @@ public class InputHandler implements InputProcessor
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button)
     {
+        if (button == Input.Buttons.LEFT && debugger.getDebugDisplayState() && debugger.getWallToolStatus())
+        {
+            debugger.placeWallTool(screenX, 640 - screenY);
+            return true;
+        }
+
+        if (button == Input.Buttons.LEFT && debugger.getDebugDisplayState() && debugger.getEntityToolStatus())
+        {
+            debugger.placeEntityTool(screenX, 640 - screenY);
+        }
+
         return false;
     }
 

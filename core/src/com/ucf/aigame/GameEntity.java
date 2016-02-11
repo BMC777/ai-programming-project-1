@@ -11,8 +11,6 @@ public class GameEntity
     private Rectangle collisionBox;
     private boolean detected;
 
-    private Vector2 currentEntityVelocity;
-    private Vector2 nextEntityVelocity;
     private Vector2 currentEntityHeading;   //Direction entity is facing (Should always be Normalized)
     private Vector2 nextEntityHeading;
 
@@ -27,7 +25,6 @@ public class GameEntity
     private float yCurrentWorldPosition;
     private float rotationAngle; //Angle between current and next Heading
 
-    private static final float BASE_VELOCITY = 125;
     private static final Vector2 REFERENCE_VECTOR = new Vector2(1, 0);  //Normalized Vector pointing to 0 degrees
 
     GameEntity(float xCurrentWorldPosition, float yCurrentWorldPosition, float entityWidth, float entityHeight)
@@ -46,13 +43,10 @@ public class GameEntity
 
         currentEntityHeading = new Vector2(REFERENCE_VECTOR);       //Player always spawns facing 'East'
         nextEntityHeading = new Vector2(currentEntityHeading);
-        currentEntityVelocity = new Vector2();                      //Velocity is initially 0
-        nextEntityVelocity = new Vector2(currentEntityVelocity);
 
         collisionBox = new Rectangle(xCurrentWorldPosition, yCurrentWorldPosition, entityWidth, entityHeight);
 
         detected = false;
-
     }
 
     public void update(float timeSinceLastUpdate)
@@ -60,43 +54,7 @@ public class GameEntity
         currentEntityHeading.set(nextEntityHeading);    //Update to new calculated heading
         rotationAngle = currentEntityHeading.angle();   //Angle new heading was rotated by.
 
-        nextEntityVelocity.set(inputX, inputY);         //Velocity initialized to basic input velocities
-
-        if (inputX != 0 && inputY != 0)
-        {
-            nextEntityVelocity.scl(0.5f);               //Diagonal movement should not be faster
-        }
-
-        nextEntityVelocity.scl(BASE_VELOCITY);          //Applying the velocity magnitude
-        nextEntityVelocity.rotate(rotationAngle - 90);  //Rotating the vector to match the heading
-        currentEntityVelocity.set(nextEntityVelocity);  //Update the current velocity
-
-        //Update World position, scaling velocity over timeSinceLastUpdate
-        xCurrentWorldPosition += currentEntityVelocity.x * timeSinceLastUpdate;
-        yCurrentWorldPosition += currentEntityVelocity.y * timeSinceLastUpdate;
-
         collisionBox.setPosition(xCurrentWorldPosition, yCurrentWorldPosition);
-    }
-
-    //Updated by InputHandler
-    public void moveLeft()
-    {
-        inputX -= 1;
-    }
-
-    public void moveRight()
-    {
-        inputX += 1;
-    }
-
-    public void moveUp()
-    {
-        inputY += 1;
-    }
-
-    public void moveDown()
-    {
-        inputY -= 1;
     }
 
     public void rotateToFaceMouse(float xCurrentMousePosition, float yCurrentMousePosition)
