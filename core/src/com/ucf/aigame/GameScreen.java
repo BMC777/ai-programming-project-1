@@ -18,11 +18,13 @@ public class GameScreen implements Screen
 
     public GameScreen()
     {
+        // Set dimensions
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
         int midPointX = (int)(screenWidth / 2);
         int midPointY = (int)(screenHeight / 2);
 
+        // Instantiate universal objects
         gameWorld = new GameWorld(midPointX, midPointY, screenWidth, screenHeight);
         collisionDetector = new CollisionDetector(gameWorld);
         debugger = new Debugger(gameWorld);
@@ -30,6 +32,7 @@ public class GameScreen implements Screen
 
         PlayerEntity playerEntity = gameWorld.getPlayerEntity();
 
+        // For player input
         InputHandler inputHandler = new InputHandler(playerEntity, debugger);
         Gdx.input.setInputProcessor(inputHandler);
     }

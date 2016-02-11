@@ -18,10 +18,12 @@ public class GameWorld
 
     public GameWorld(float midPointX, float midPointY, float gameWidth, float gameHeight)
     {
+        // Instantiate and deploy entities
         playerEntity = new PlayerEntity(midPointX, midPointY, TILE_DIMENSIONS, TILE_DIMENSIONS);
         gameEntity1 = new GameEntity(64, 544, TILE_DIMENSIONS, TILE_DIMENSIONS);
         gameEntity2 = new GameEntity(544, 544, TILE_DIMENSIONS, TILE_DIMENSIONS);
 
+        // Create array of non-player entities and walls
         gameEntityArrayList = new ArrayList<GameEntity>();
         gameEntityArrayList.add(gameEntity1);
         gameEntityArrayList.add(gameEntity2);

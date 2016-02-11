@@ -7,23 +7,19 @@ package com.ucf.aigame;
 public class Debugger
 {
     private GameWorld gameWorld;
-
     private boolean displayDebugger;
-
     private float[] wallSensorLengthArray;
-
     private PlayerEntity playerEntity;
 
     Debugger(GameWorld gameWorld)
     {
+        // Instantiate objects; no  display by default
         this.gameWorld = gameWorld;
-
         playerEntity = gameWorld.getPlayerEntity();
 
         displayDebugger = false;
 
         wallSensorLengthArray = new float[playerEntity.getWallSensorLengthArray().length];
-
         for (int i = 0; i < wallSensorLengthArray.length; i++)
         {
             wallSensorLengthArray[i] = 0;

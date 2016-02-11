@@ -35,6 +35,7 @@ public class CollisionDetector
 
     CollisionDetector (GameWorld gameWorld)
     {
+        // Get all GameWorld Objects
         this.playerEntity = gameWorld.getPlayerEntity();
         this.gameEntity1 = gameWorld.getGameEntity1();
         this.gameEntity2 = gameWorld.getGameEntity2();
@@ -54,6 +55,7 @@ public class CollisionDetector
 
     public void checkCollisions()
     {
+        // Reset all collision detections
         for (int x = 0; x < 4; x++)
         {
             collisionDetectionArray[x] = false;
@@ -100,6 +102,7 @@ public class CollisionDetector
                         collisionDetectionArray[2], collisionDetectionArray[3]);
             }
 
+            // Player wall sensors 'feeling' for walls in the distance
             for (int j = 0; j < playerEntity.getWallSensorArray().length; j++)
             {
                 scalingSensor.set(playerEntity.getWallSensorArray()[j]);
@@ -129,6 +132,7 @@ public class CollisionDetector
 
         }
 
+        // Cycle through all non-player entities in the game
         for (int i = 0; i < entityList.size(); i++) {
             // Check collision between AdjacentAgentSensor and GameEntity
             if (intersector.overlaps(playerEntity.getAdjecentAgentSensor(), entityList.get(i).getCollisionBox())) {

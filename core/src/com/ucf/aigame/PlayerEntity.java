@@ -9,11 +9,13 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class PlayerEntity
 {
+    // Sensors and collisions
     private Rectangle collisionBox;
     private WallSensor wallSensor;
     private AdjacentAgentSensor radar;
     private PieSliceSensor pieSliceSensor;
 
+    // Velocity and heading
     private Vector2 currentPlayerVelocity;
     private Vector2 nextPlayerVelocity;
     private Vector2 currentPlayerHeading;   //Direction player is facing (Should always be Normalized)
@@ -28,6 +30,7 @@ public class PlayerEntity
     private int inputX;
     private int inputY;
 
+    // Global and local positioning
     private float playerWidth;
     private float playerHeight;
     private float xPlayerOrigin;

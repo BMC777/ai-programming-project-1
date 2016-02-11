@@ -19,12 +19,13 @@ public class AssetLoader
 
     public static void load()
     {
-        //Retrieving Textures from assets folder
+        // Retrieving Textures from assets folder
         floorTileTexture = new Texture(Gdx.files.internal("Floor Tile.png"));
         wallTileTexture =  new Texture(Gdx.files.internal("Wall Tile.png"));
         gameEntityTexture = new Texture(Gdx.files.internal("Game Entity.png"));
         playerEntityTexture = new Texture(Gdx.files.internal("Player.png"));
 
+        // Instantiate TextureRegions
         playerEntityTextureRegion = new TextureRegion(playerEntityTexture);
         gameEntityTextureRegion = new TextureRegion(gameEntityTexture);
     }

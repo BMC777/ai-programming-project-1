@@ -73,6 +73,7 @@ public class GameRenderer
         renderPlayerEntity();
         renderGameEntities();
 
+        // If debugger is on, render sensor output
         if (debugger.getDebugDisplayState())
         {
             Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -167,6 +168,7 @@ public class GameRenderer
 
         for (int i = 0; i < playerEntity.getWallSensorArray().length; i++)
         {
+            // Draw sensors
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
             shapeRenderer.setColor(255/255f, 180/255f, 0, 0.5f);
@@ -176,10 +178,9 @@ public class GameRenderer
 
             shapeRenderer.circle(playerEntity.getWallSensorEndpointX(i), playerEntity.getWallSensorEndpointY(i), 4);
 
-            //shapeRenderer.end();
-
             shapeRenderer.end();
 
+            // Render sensor values
             batcher.begin();
 
             bitmapFont.setColor(255/255f, 180/255f, 0, 1);
@@ -308,6 +309,7 @@ public class GameRenderer
 
     private void renderDebugState()
     {
+        // Render box as font background to debug text info
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         shapeRenderer.setColor(0, 0, 0, 0.5f);
@@ -317,6 +319,7 @@ public class GameRenderer
 
         shapeRenderer.end();
 
+        // Render debug text info
         batcher.begin();
 
         if (debugger.getDebugDisplayState())

@@ -34,7 +34,7 @@ public class PieSliceSensor {
         backLeft.rotate(135);
         backRight.rotate(255);
 
-        // Limit the Vector size
+        // Scale vectors
         this.sensorRange = sensorRange;
         frontLeft.scl(sensorRange);
         frontRight.scl(sensorRange);
@@ -51,6 +51,7 @@ public class PieSliceSensor {
         backLeft.set( currentHeading ).rotate(135);
         backRight.set( currentHeading ).rotate(225);
 
+        // Scale vectors
         frontLeft.scl(sensorRange);
         frontRight.scl(sensorRange);
         backLeft.scl(sensorRange);
