@@ -13,6 +13,7 @@ public class GameScreen implements Screen
     private CollisionDetector collisionDetector;
     private Debugger debugger;
 
+
     private float runTime;
 
     public GameScreen()
@@ -24,10 +25,11 @@ public class GameScreen implements Screen
 
         gameWorld = new GameWorld(midPointX, midPointY, screenWidth, screenHeight);
         collisionDetector = new CollisionDetector(gameWorld);
-        gameRenderer = new GameRenderer(gameWorld, screenWidth, screenHeight);
-        debugger = new Debugger();
+        debugger = new Debugger(gameWorld);
+        gameRenderer = new GameRenderer(gameWorld, debugger, screenWidth, screenHeight);
 
         PlayerEntity playerEntity = gameWorld.getPlayerEntity();
+
         InputHandler inputHandler = new InputHandler(playerEntity, debugger);
         Gdx.input.setInputProcessor(inputHandler);
     }
@@ -45,6 +47,7 @@ public class GameScreen implements Screen
         gameWorld.update(delta);
         collisionDetector.checkCollisions();
         gameRenderer.render(runTime);
+        debugger.update();
     }
 
     @Override

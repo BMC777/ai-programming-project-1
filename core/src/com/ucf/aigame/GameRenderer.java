@@ -19,6 +19,7 @@ public class GameRenderer
     private SpriteBatch batcher;
     private ShapeRenderer shapeRenderer;
     private BitmapFont bitmapFont;
+    private Debugger debugger;
 
     private TextureRegion playerEntityTextureRegion;
     private TextureRegion gameEntityTextureRegion;
@@ -36,9 +37,10 @@ public class GameRenderer
 
     private float tempFloat = 0;
 
-    public GameRenderer(GameWorld gameWorld, float gameWidth, float gameHeight)
+    public GameRenderer(GameWorld gameWorld, Debugger debugger, float gameWidth, float gameHeight)
     {
         this.gameWorld = gameWorld;
+        this.debugger = debugger;
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
 
@@ -62,13 +64,36 @@ public class GameRenderer
 
     public void render(float runTime)
     {
-
         //OpenGL graphics stuff
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        renderBackground();
+
+        renderPlayerEntity();
+        renderGameEntities();
+
+        if (debugger.getDebugDisplayState())
+        {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+            renderWallSensor();
+            renderAdjacentAgentSensors();
+            renderPieSliceSensor();
+
+            renderPlayerInformation();
+
+
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+        }
+
+        renderDebugState();
+    }
+
+    private void renderBackground()
+    {
         batcher.begin();
-        batcher.disableBlending();
 
         //Fills the screen with floor and wall tiles.
         for (int x = 0; x < gameWidth; x += TILE_DIMENSIONS)
@@ -86,12 +111,37 @@ public class GameRenderer
             }
         }
 
-        batcher.enableBlending();
+
+        batcher.end();
+    }
+
+    private void renderPlayerEntity()
+    {
+        batcher.begin();
 
         //Drawing the playerEntityTexture
         batcher.draw(playerEntityTextureRegion, playerEntity.getCurrentXPosition(), playerEntity.getCurrentYPosition(),
                 playerEntity.getXPlayerOrigin(), playerEntity.getYPlayerOrigin(), playerEntity.getWidth(), playerEntity.getHeight(),
                 1, 1, playerEntity.getRotationAngle());
+
+        batcher.end();
+    }
+
+    private void renderPlayerInformation()
+    {
+        batcher.begin();
+        bitmapFont.setColor(255f, 255f, 255f, 1);
+
+        bitmapFont.draw(batcher, "Heading: " + playerEntity.getCurrentHeading().toString(), playerEntity.getCurrentXPosition() -16, playerEntity.getCurrentYPosition());
+        bitmapFont.draw(batcher, "Position:  (" + Float.toString(playerEntity.getCurrentXPosition()) + ", " +
+                Float.toString(playerEntity.getCurrentYPosition()) + ")", playerEntity.getCurrentXPosition() - 16, playerEntity.getCurrentYPosition() - 16);
+
+        batcher.end();
+    }
+
+    private void renderGameEntities()
+    {
+        batcher.begin();
 
         batcher.draw(gameEntityTextureRegion, gameEntity1.getCurrentXPosition(), gameEntity1.getCurrentYPosition(),
                 gameEntity1.getXEntityOrigin(), gameEntity1.getYEntityOrigin(), gameEntity1.getWidth(), gameEntity1.getHeight(),
@@ -102,21 +152,50 @@ public class GameRenderer
                 1, 1, gameEntity2.getRotationAngle());
 
         batcher.end();
+    }
+
+    private void renderWallSensor()
+    {
+        int lineHeightTextOffset = 0;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0, 0, 0.5f);
+        shapeRenderer.rect(gameWidth - 32 * 8, 32, 32 * 7, 32 * 3);
+        shapeRenderer.setColor(0/255f, 34/255f, 255/255f, 0.5f);
+        shapeRenderer.rect((gameWidth + 2) - 32 * 8,2 + 32, (32 * 7) - 4, (32 * 3) - 4);
+        shapeRenderer.end();
 
-
-        //For Wall Sensors
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < playerEntity.getWallSensorArray().length; i++)
         {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+            shapeRenderer.setColor(255/255f, 180/255f, 0, 0.5f);
+
             shapeRenderer.rectLine(playerEntity.getWallSensorOriginX(), playerEntity.getWallSensorOriginY(),
                     playerEntity.getWallSensorEndpointX(i), playerEntity.getWallSensorEndpointY(i), 1);
 
             shapeRenderer.circle(playerEntity.getWallSensorEndpointX(i), playerEntity.getWallSensorEndpointY(i), 4);
-        }
 
-        shapeRenderer.end();
-        
+            //shapeRenderer.end();
+
+            shapeRenderer.end();
+
+            batcher.begin();
+
+            bitmapFont.setColor(255/255f, 180/255f, 0, 1);
+
+            bitmapFont.draw(batcher, Integer.toString(i), playerEntity.getWallSensorEndpointX(i) + 8, playerEntity.getWallSensorEndpointY(i) + 8);
+            bitmapFont.draw(batcher, "Wall Sensor " + Integer.toString(i) + " Length: "
+                    + Float.toString(debugger.getWallSensorLengthOutput(i)), (gameWidth + 4) - 32 * 8, 32 * 3.5f + 6 - lineHeightTextOffset);
+
+
+            lineHeightTextOffset += 16;
+            batcher.end();
+        }
+    }
+
+    private void renderAdjacentAgentSensors()
+    {
         // For AdjacentAgentSensor
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
@@ -129,7 +208,7 @@ public class GameRenderer
 
             // Check if detected by AdjacentAgentSensor
             if ( gameWorld.getEntityList().get(i).isDetected() ) {
-                shapeRenderer.setColor(255, 0, 0, 1);
+                shapeRenderer.setColor(255, 0, 0, 0.5f);
 
                 // Draw Circle
                 shapeRenderer.circle(gameWorld.getEntityList().get(i).getEntityCenter().x,
@@ -138,6 +217,19 @@ public class GameRenderer
 
                 // Draw Relative Heading
                 shapeRenderer.rectLine(playerEntity.getvOrigin(), gameWorld.getEntityList().get(i).getEntityCenter(), 1);
+            }
+        }
+
+        shapeRenderer.end();
+    }
+
+    private void renderPieSliceSensor()
+    {
+        for (int i = 0; i < gameWorld.getEntityList().size(); i++) {
+
+            // Check if detected by AdjacentAgentSensor
+            if ( gameWorld.getEntityList().get(i).isDetected() ) {
+                shapeRenderer.setColor(255, 0, 0, 0.5f);
 
                 // For: PieSliceSensor (detected)
                 // Identifies Quadrant and increments its Activation Level
@@ -146,22 +238,23 @@ public class GameRenderer
                         gameWorld.getEntityList().get(i).getEntityCenter().sub(playerEntity.getvOrigin()));
             }
         }
-
         // Activation Levels have been tallied, Now get highest Activation Level and draw / color lines
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         // FRONT RIGHT
         tempFloat = Math.max(playerEntity.getPieSliceSensor().getActivationLevelFRONT(), playerEntity.getPieSliceSensor().getActivationLevelRIGHT());
         if (tempFloat < 1) { // Green
-            shapeRenderer.setColor(0, 255, 0, 1);
+            shapeRenderer.setColor(0, 255, 0, 0.5f);
         }
         else if (tempFloat == 1) { // Yellow
-            shapeRenderer.setColor(255, 255, 0, 1);
+            shapeRenderer.setColor(255, 255, 0, 0.5f);
         }
         else { // Red
-            shapeRenderer.setColor(255, 0, 0, 1);
+            shapeRenderer.setColor(255, 0, 0, 0.5f);
         }
         shapeRenderer.rectLine(playerEntity.getvOrigin(),
-                playerEntity.getPieSliceSensor().getFrontRight().add(playerEntity.getvOrigin()), 1);
+                playerEntity.getPieSliceSensor().getFrontRight().add(playerEntity.getvOrigin()), 0.5f);
 
         // FRONT LEFT
         tempFloat = Math.max(playerEntity.getPieSliceSensor().getActivationLevelFRONT(), playerEntity.getPieSliceSensor().getActivationLevelLEFT());
@@ -175,61 +268,68 @@ public class GameRenderer
             shapeRenderer.setColor(255, 0, 0, 1);
         }
         shapeRenderer.rectLine(playerEntity.getvOrigin(),
-                playerEntity.getPieSliceSensor().getFrontLeft().add(playerEntity.getvOrigin()), 1);
+                playerEntity.getPieSliceSensor().getFrontLeft().add(playerEntity.getvOrigin()), 0.5f);
 
         // BACK LEFT
         tempFloat = Math.max(playerEntity.getPieSliceSensor().getActivationLevelBACK(), playerEntity.getPieSliceSensor().getActivationLevelLEFT());
         if (tempFloat < 1) { // Green
-            shapeRenderer.setColor(0, 255, 0, 1);
+            shapeRenderer.setColor(0, 255, 0, 0.5f);
         }
         else if (tempFloat == 1) { // Yellow
-            shapeRenderer.setColor(255, 255, 0, 1);
+            shapeRenderer.setColor(255, 255, 0, 0.5f);
         }
         else { // Red
-            shapeRenderer.setColor(255, 0, 0, 1);
+            shapeRenderer.setColor(255, 0, 0, 0.5f);
         }
         shapeRenderer.rectLine(playerEntity.getvOrigin(),
-                playerEntity.getPieSliceSensor().getBackLeft().add(playerEntity.getvOrigin()), 1);
+                playerEntity.getPieSliceSensor().getBackLeft().add(playerEntity.getvOrigin()), 0.5f);
 
         // BACK RIGHT
         tempFloat = Math.max(playerEntity.getPieSliceSensor().getActivationLevelBACK(), playerEntity.getPieSliceSensor().getActivationLevelRIGHT());
         if (tempFloat < 1) { // Green
-            shapeRenderer.setColor(0, 255, 0, 1);
+            shapeRenderer.setColor(0, 255, 0, 0.5f);
         }
         else if (tempFloat == 1) { // Yellow
-            shapeRenderer.setColor(255, 255, 0, 1);
+            shapeRenderer.setColor(255, 255, 0, 0.5f);
         }
         else { // Red
-            shapeRenderer.setColor(255, 0, 0, 1);
+            shapeRenderer.setColor(255, 0, 0, 0.5f);
         }
         shapeRenderer.rectLine(playerEntity.getvOrigin(),
-                playerEntity.getPieSliceSensor().getBackRight().add(playerEntity.getvOrigin()), 1);
+                playerEntity.getPieSliceSensor().getBackRight().add(playerEntity.getvOrigin()), 0.5f);
 
 
         // Reset Color to White and Reset PieSliceSensors
-        shapeRenderer.setColor(255, 255, 255, 1);
+        shapeRenderer.setColor(255, 255, 255, 0.5f);
         playerEntity.getPieSliceSensor().resetActivationLevels();
 
         shapeRenderer.end();
+    }
 
-
-
-
-
+    private void renderDebugState()
+    {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-
-        shapeRenderer.setColor(0, 0, 0, 1);
+        shapeRenderer.setColor(0, 0, 0, 0.5f);
         shapeRenderer.rect(0, 0, 128, 24);
-        shapeRenderer.setColor(0/255f, 34/255f, 255/255f, 0);
+        shapeRenderer.setColor(0/255f, 34/255f, 255/255f, 0.5f);
         shapeRenderer.rect(2, 2, 124, 20);
 
-        shapeRenderer.setColor(255, 255, 255, 1);
         shapeRenderer.end();
 
         batcher.begin();
-        bitmapFont.setColor(0/255f, 255/255f, 43/255f, 1);
-        bitmapFont.draw(batcher, "Debugger ON", 16, 18);
+
+        if (debugger.getDebugDisplayState())
+        {
+            bitmapFont.setColor(0/255f, 255/255f, 43/255f, 1);
+            bitmapFont.draw(batcher, "[V] Debugger ON", 6, 18);
+        }
+        else
+        {
+            bitmapFont.setColor(255/255f, 0/255f, 0/255f, 1);
+            bitmapFont.draw(batcher, "[V] Debugger OFF", 6, 18);
+        }
+
         batcher.end();
     }
 

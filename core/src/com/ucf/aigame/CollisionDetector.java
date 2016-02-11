@@ -110,6 +110,7 @@ public class CollisionDetector
                 boolean changedSensor = false;
 
 
+
                 while (currentWallCollisionBox.contains(tempSensorEndpoints))
                 {
                     tempSensorEndpoints.sub(scalingSensor);
@@ -122,6 +123,8 @@ public class CollisionDetector
                 {
                     playerEntity.setWallSensorLength(length.len(), j);
                 }
+
+                playerEntity.setWallSensorCollisionIndex(j, changedSensor);
             }
 
         }

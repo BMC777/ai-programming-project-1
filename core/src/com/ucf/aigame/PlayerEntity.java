@@ -206,6 +206,21 @@ public class PlayerEntity
         wallSensor.setLength(length, index);
     }
 
+    public float[] getWallSensorLengthArray()
+    {
+        return wallSensor.getLengthArray();
+    }
+
+    public void setWallSensorCollisionIndex(int index, boolean value)
+    {
+        wallSensor.setCollisionArrayIndex(index, value);
+    }
+
+    public boolean getWallSensorCollisionValue(int index)
+    {
+        return wallSensor.getCollisionValue(index);
+    }
+
     public Rectangle getCollisionBox()
     {
         return collisionBox;
