@@ -99,6 +99,7 @@ public class InputHandler implements InputProcessor
         if (button == Input.Buttons.LEFT && debugger.getDebugDisplayState() && debugger.getEntityToolStatus())
         {
             debugger.placeEntityTool(screenX, 640 - screenY);
+            return true;
         }
 
         return false;

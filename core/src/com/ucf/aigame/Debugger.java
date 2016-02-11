@@ -35,12 +35,6 @@ public class Debugger
     public void update()
     {
         updateWallSensorLengthArray();
-
-        if (wallToolStatus)
-            entityToolStatus = false;
-
-        if (entityToolStatus)
-            wallToolStatus = false;
     }
 
     public void setDebugDisplayState(boolean setTo)
@@ -71,6 +65,9 @@ public class Debugger
     public void setEntityToolStatus(boolean status)
     {
         entityToolStatus = status;
+
+        if (status)
+            wallToolStatus = false;
     }
 
     public void placeWallTool(float x, float y)
@@ -81,6 +78,9 @@ public class Debugger
     public void setWallToolStatus(boolean status)
     {
         wallToolStatus = status;
+
+        if (status)
+            entityToolStatus = false;
     }
 
     public boolean getWallToolStatus()

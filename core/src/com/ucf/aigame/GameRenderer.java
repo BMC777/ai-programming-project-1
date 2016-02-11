@@ -82,6 +82,7 @@ public class GameRenderer
             renderPieSliceSensor();
 
             renderPlayerInformation();
+            renderToolStates();
 
 
             Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -303,6 +304,48 @@ public class GameRenderer
         playerEntity.getPieSliceSensor().resetActivationLevels();
 
         shapeRenderer.end();
+    }
+
+    private void renderToolStates()
+    {
+        // Render box as font background to debug text info
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        shapeRenderer.setColor(0, 0, 0, 0.5f);
+        shapeRenderer.rect(128, 0, 132, 24);
+        shapeRenderer.rect(258, 0, 132, 24);
+        shapeRenderer.setColor(0/255f, 34/255f, 255/255f, 0.5f);
+        shapeRenderer.rect(130, 2, 128, 20);
+        shapeRenderer.rect(260, 2, 128, 20);
+
+        shapeRenderer.end();
+
+        // Render debug text info
+        batcher.begin();
+
+        if (debugger.getEntityToolStatus())
+        {
+            bitmapFont.setColor(0/255f, 255/255f, 43/255f, 1);
+            bitmapFont.draw(batcher, "[O] Entity Tool ON", 133, 18);
+        }
+        else
+        {
+            bitmapFont.setColor(255/255f, 0/255f, 0/255f, 1);
+            bitmapFont.draw(batcher, "[O] Entity Tool OFF", 133, 18);
+        }
+
+        if (debugger.getWallToolStatus())
+        {
+            bitmapFont.setColor(0/255f, 255/255f, 43/255f, 1);
+            bitmapFont.draw(batcher, "[P] Wall Tool ON", 263, 18);
+        }
+        else
+        {
+            bitmapFont.setColor(255/255f, 0/255f, 0/255f, 1);
+            bitmapFont.draw(batcher, "[P] Wall Tool OFF", 263, 18);
+        }
+
+        batcher.end();
     }
 
     private void renderDebugState()

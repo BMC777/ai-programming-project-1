@@ -50,12 +50,12 @@ public class GameWorld
 
     public void newWall(float x, float y)
     {
-        wallObjectArrayList.add(new WallObject(x - 32, y - 32, TILE_DIMENSIONS, TILE_DIMENSIONS));
+        wallObjectArrayList.add(new WallObject(x - 16, y - 16, TILE_DIMENSIONS, TILE_DIMENSIONS));
     }
 
     public void newEntity(float x, float y)
     {
-        gameEntityArrayList.add(new GameEntity(x - 32, y - 32, TILE_DIMENSIONS, TILE_DIMENSIONS));
+        gameEntityArrayList.add(new GameEntity(x - 16, y - 16, TILE_DIMENSIONS, TILE_DIMENSIONS));
     }
 
     public PlayerEntity getPlayerEntity()
