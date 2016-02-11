@@ -21,7 +21,7 @@ public class CollisionDetector
 
     private Rectangle currentPlayerCollisionBox;
     private Rectangle currentWallCollisionBox;
-    private Rectangle getCurrentWallCollisionBox;
+    private Rectangle currentEntityCollisionBox;
 
     private Vector2 leftPoint;
     private Vector2 rightPoint;
@@ -64,16 +64,32 @@ public class CollisionDetector
         {
             currentWallCollisionBox = wallList.get(i).getCollisionBox();
 
+            if (i < entityList.size())
+            {
+                currentEntityCollisionBox = entityList.get(i).getCollisionBox();
+            }
+
             //Looking for player collision with walls
-            if (intersector.overlaps(currentPlayerCollisionBox, currentWallCollisionBox))
+            if (intersector.overlaps(currentPlayerCollisionBox, currentWallCollisionBox) || intersector.overlaps(currentPlayerCollisionBox, currentEntityCollisionBox))
             {
                 playerEntity.setCollisionNotification(true);
 
-                currentWallCollisionBox.getCenter(centerPoint);
-                upPoint.set(centerPoint).add(0, currentWallCollisionBox.getHeight() / 2);
-                downPoint.set(centerPoint).sub(0, currentWallCollisionBox.getHeight() / 2);
-                leftPoint.set(centerPoint).sub(currentWallCollisionBox.getWidth() / 2, 0);
-                rightPoint.set(centerPoint).add(currentWallCollisionBox.getWidth() / 2, 0);
+                if (intersector.overlaps(currentPlayerCollisionBox, currentWallCollisionBox))
+                {
+                    currentWallCollisionBox.getCenter(centerPoint);
+                    upPoint.set(centerPoint).add(0, currentWallCollisionBox.getHeight() / 2);
+                    downPoint.set(centerPoint).sub(0, currentWallCollisionBox.getHeight() / 2);
+                    leftPoint.set(centerPoint).sub(currentWallCollisionBox.getWidth() / 2, 0);
+                    rightPoint.set(centerPoint).add(currentWallCollisionBox.getWidth() / 2, 0);
+                }
+                else
+                {
+                    currentEntityCollisionBox.getCenter(centerPoint);
+                    upPoint.set(centerPoint).add(0, currentEntityCollisionBox.getHeight() / 2);
+                    downPoint.set(centerPoint).sub(0, currentEntityCollisionBox.getHeight() / 2);
+                    leftPoint.set(centerPoint).sub(currentEntityCollisionBox.getWidth() / 2, 0);
+                    rightPoint.set(centerPoint).add(currentEntityCollisionBox.getWidth() / 2, 0);
+                }
 
                 if (currentPlayerCollisionBox.contains(rightPoint))
                 {

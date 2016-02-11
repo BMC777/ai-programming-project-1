@@ -35,6 +35,12 @@ public class Debugger
     public void update()
     {
         updateWallSensorLengthArray();
+
+        if (wallToolStatus)
+            entityToolStatus = false;
+
+        if (entityToolStatus)
+            wallToolStatus = false;
     }
 
     public void setDebugDisplayState(boolean setTo)
