@@ -52,7 +52,6 @@ public class WallSensor
 
 
             rotateSensorDegrees -= 30;
-            collisionArray[i] = false;
         }
     }
 
@@ -69,6 +68,25 @@ public class WallSensor
     public void setLength(float length, int sensorNumber)
     {
         lengthArray[sensorNumber] = length;
-        collisionArray[sensorNumber] = true;
+    }
+
+    public float[] getLengthArray()
+    {
+        return lengthArray;
+    }
+
+    public boolean[] getCollisionArray()
+    {
+        return collisionArray;
+    }
+
+    public boolean getCollisionValue(int index)
+    {
+        return collisionArray[index];
+    }
+
+    public void setCollisionArrayIndex(int index, boolean value)
+    {
+        collisionArray[index] = value;
     }
 }

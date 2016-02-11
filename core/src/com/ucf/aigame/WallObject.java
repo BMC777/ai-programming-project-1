@@ -22,7 +22,7 @@ public class WallObject
         this.width = width;
         this.height = height;
 
-        collisionBox = new Rectangle(xWorldPosition, yWorldPosition, width, height);
+        collisionBox = new Rectangle(xWorldPosition, yWorldPosition, width + 2, height + 2);
     }
 
     public float getXWorldPosition()

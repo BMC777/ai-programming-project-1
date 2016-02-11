@@ -10,8 +10,6 @@ public class GameWorld
     private PlayerEntity playerEntity;
     private GameEntity gameEntity1;
     private GameEntity gameEntity2;
-    private Debugger debugger;
-
 
     private ArrayList<WallObject> wallObjectArrayList;
     private ArrayList<GameEntity> gameEntityArrayList;
@@ -23,7 +21,6 @@ public class GameWorld
         playerEntity = new PlayerEntity(midPointX, midPointY, TILE_DIMENSIONS, TILE_DIMENSIONS);
         gameEntity1 = new GameEntity(64, 544, TILE_DIMENSIONS, TILE_DIMENSIONS);
         gameEntity2 = new GameEntity(544, 544, TILE_DIMENSIONS, TILE_DIMENSIONS);
-        debugger = new Debugger();
 
         gameEntityArrayList = new ArrayList<GameEntity>();
         gameEntityArrayList.add(gameEntity1);
@@ -73,10 +70,5 @@ public class GameWorld
 
     public ArrayList<GameEntity> getEntityList() {
         return gameEntityArrayList;
-    }
-
-    public Debugger getDebugger()
-    {
-        return debugger;
     }
 }
