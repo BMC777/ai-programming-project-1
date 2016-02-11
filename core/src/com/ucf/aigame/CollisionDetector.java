@@ -15,14 +15,13 @@ public class CollisionDetector
     private Intersector intersector;
 
     private PlayerEntity playerEntity;
-    private GameEntity gameEntity1;
-    private GameEntity gameEntity2;
 
     private ArrayList<WallObject> wallList;
     private ArrayList<GameEntity> entityList;
 
     private Rectangle currentPlayerCollisionBox;
     private Rectangle currentWallCollisionBox;
+    private Rectangle getCurrentWallCollisionBox;
 
     private Vector2 leftPoint;
     private Vector2 rightPoint;
@@ -36,8 +35,6 @@ public class CollisionDetector
     CollisionDetector (GameWorld gameWorld)
     {
         this.playerEntity = gameWorld.getPlayerEntity();
-        this.gameEntity1 = gameWorld.getGameEntity1();
-        this.gameEntity2 = gameWorld.getGameEntity2();
         this.wallList = gameWorld.getWallList();
         this.entityList = gameWorld.getEntityList();
 
@@ -108,7 +105,6 @@ public class CollisionDetector
                 Vector2 tempSensorEndpoints = new Vector2(playerEntity.getWallSensorEndpointX(j), playerEntity.getWallSensorEndpointY(j));
                 Vector2 length = new Vector2();
                 boolean changedSensor = false;
-
 
 
                 while (currentWallCollisionBox.contains(tempSensorEndpoints))
