@@ -174,6 +174,8 @@ public class GameRenderer
 
             shapeRenderer.circle(playerEntity.getWallSensorEndpointX(i), playerEntity.getWallSensorEndpointY(i), 4);
 
+            //shapeRenderer.end();
+
             shapeRenderer.end();
 
             batcher.begin();
