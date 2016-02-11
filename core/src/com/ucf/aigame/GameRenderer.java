@@ -73,16 +73,22 @@ public class GameRenderer
         renderPlayerEntity();
         renderGameEntities();
 
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        if (debugger.getDebugDisplayState())
+        {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-        renderWallSensor();
-        renderAdjacentAgentSensors();
-        renderPieSliceSensor();
+            renderWallSensor();
+            renderAdjacentAgentSensors();
+            renderPieSliceSensor();
+
+            renderPlayerInformation();
+
+
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+        }
 
         renderDebugState();
-
-        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     private void renderBackground()
@@ -118,7 +124,12 @@ public class GameRenderer
                 playerEntity.getXPlayerOrigin(), playerEntity.getYPlayerOrigin(), playerEntity.getWidth(), playerEntity.getHeight(),
                 1, 1, playerEntity.getRotationAngle());
 
+        batcher.end();
+    }
 
+    private void renderPlayerInformation()
+    {
+        batcher.begin();
         bitmapFont.setColor(255f, 255f, 255f, 1);
 
         bitmapFont.draw(batcher, "Heading: " + playerEntity.getCurrentHeading().toString(), playerEntity.getCurrentXPosition() -16, playerEntity.getCurrentYPosition());
@@ -308,13 +319,13 @@ public class GameRenderer
 
         if (debugger.getDebugDisplayState())
         {
-            bitmapFont.setColor(0/255f, 255/255f, 43/255f, 0.5f);
-            bitmapFont.draw(batcher, "Debugger ON", 16, 18);
+            bitmapFont.setColor(0/255f, 255/255f, 43/255f, 1);
+            bitmapFont.draw(batcher, "[V] Debugger ON", 6, 18);
         }
         else
         {
-            bitmapFont.setColor(255/255f, 0/255f, 0/255f, 0.5f);
-            bitmapFont.draw(batcher, "Debugger OFF", 16, 18);
+            bitmapFont.setColor(255/255f, 0/255f, 0/255f, 1);
+            bitmapFont.draw(batcher, "[V] Debugger OFF", 6, 18);
         }
 
         batcher.end();

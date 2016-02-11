@@ -9,9 +9,6 @@ public class Debugger
     private GameWorld gameWorld;
 
     private boolean displayDebugger;
-    private boolean displayWallSensor;
-    private boolean displayAdjacentAgentSensor;
-    private boolean displayPieSliceSensor;
 
     private float[] wallSensorLengthArray;
 
@@ -23,10 +20,7 @@ public class Debugger
 
         playerEntity = gameWorld.getPlayerEntity();
 
-        displayDebugger = true;
-        displayWallSensor = false;
-        displayAdjacentAgentSensor = false;
-        displayPieSliceSensor = false;
+        displayDebugger = false;
 
         wallSensorLengthArray = new float[playerEntity.getWallSensorLengthArray().length];
 
@@ -41,14 +35,14 @@ public class Debugger
         updateWallSensorLengthArray();
     }
 
+    public void setDebugDisplayState(boolean setTo)
+    {
+        displayDebugger = setTo;
+    }
+
     public boolean getDebugDisplayState()
     {
         return displayDebugger;
-    }
-
-    private void updateWallSensorLengthArray()
-    {
-        wallSensorLengthArray = playerEntity.getWallSensorLengthArray();
     }
 
     public float getWallSensorLengthOutput(int index)
@@ -56,13 +50,8 @@ public class Debugger
         return wallSensorLengthArray[index];
     }
 
-    public boolean getAdjacentAgentSensorOutput()
+    private void updateWallSensorLengthArray()
     {
-        return displayAdjacentAgentSensor;
-    }
-
-    public boolean getPieSliceSensorOutput()
-    {
-        return displayPieSliceSensor;
+        wallSensorLengthArray = playerEntity.getWallSensorLengthArray();
     }
 }

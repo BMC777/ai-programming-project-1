@@ -16,6 +16,7 @@ public class InputHandler implements InputProcessor
     public InputHandler(PlayerEntity playerEntity, Debugger debugger)
     {
         this.playerEntity = playerEntity;
+        this.debugger = debugger;
     }
 
     @Override
@@ -37,6 +38,10 @@ public class InputHandler implements InputProcessor
 
             case Keys.D:
                 playerEntity.moveRight();
+                return true;
+
+            case Keys.V:
+                debugger.setDebugDisplayState(!debugger.getDebugDisplayState());
                 return true;
         }
 
